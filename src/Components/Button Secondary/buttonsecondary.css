@@ -1,0 +1,25 @@
+.button-secondary{
+    background-color: var(--white-60-);
+    border-radius: 8px;
+    padding: 11px 27px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    outline: none;
+    border: 1px solid var(--purple-90-);
+}
+
+.button-secondary h3{
+    color: var(--purple-90-);
+    font-weight: 700;
+}
+
+.button-secondary:active{
+    background-color: var(--purple-30-);
+}
+
+.button-secondary:disabled{
+    background-color: var(--white-60-);
+    opacity: 0.25;
+}

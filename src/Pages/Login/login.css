@@ -1,0 +1,25 @@
+.login-container{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 52px;
+    height: 100svh;
+}
+
+.login-card{
+    background-color: var(--white-90-);
+    padding: 40px;
+    border-radius: 8px;
+    max-width: 476px;
+    width: 90%;
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+}
+
+.login-fields{
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}

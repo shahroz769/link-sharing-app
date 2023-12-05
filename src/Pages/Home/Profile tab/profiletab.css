@@ -1,0 +1,130 @@
+.profile-details {
+    padding: 40px 40px 0 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+}
+
+.profile-details p {
+    color: var(--black-60-);
+}
+
+.profile-details-main {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.profile-details-header {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    cursor: default;
+    user-select: none;
+}
+
+.profile-details-picture {
+    display: flex;
+    width: 100%;
+    gap: 24px;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--white-60-);
+    border-radius: 12px;
+    height: 233px;
+    padding: 20px;
+}
+
+.upload-profile-image-main {
+    flex: 1;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 12px;
+}
+
+.profile-picture-text,
+.upload-profile-image-main,
+.profile-picture-instructions {
+    flex: 1;
+    height: 100%;
+    display: flex;
+    align-items: center;
+}
+
+.profile-picture-instructions p {
+    font-size: 12px;
+}
+
+.upload-profile-image-main {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: var(--purple-30-);
+    cursor: pointer;
+    max-width: 195px;
+    height: 195px;
+    aspect-ratio: 1;
+}
+
+.upload-profile-image-main .upload-image {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    border-radius: 12px;
+    object-fit: cover;
+    overflow: hidden;
+}
+
+.upload-profile-image-main * {
+    z-index: 10;
+}
+
+.upload-profile-image-main h3 {
+    color: var(--purple-90-);
+}
+
+.profile-details-data {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 20px;
+    background-color: var(--white-60-);
+    border-radius: 12px;
+}
+
+.profile-first-name,
+.profile-last-name,
+.profile-email {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+}
+
+.profile-first-name p,
+.profile-last-name p,
+.profile-email p {
+    min-width: 100px;
+}
+
+.profile-first-name .input-field-parent,
+.profile-last-name .input-field-parent,
+.profile-email .input-field-parent {
+    width: 70%;
+}
+
+.profile-details-footer {
+    width: 100%;
+    display: flex;
+    justify-content: end;
+    padding: 24px 40px;
+    border-top: 1px solid var(--black-30-);
+}
+
+.profile-details-footer-btn {
+    max-width: 91px;
+    align-self: flex-end;
+}

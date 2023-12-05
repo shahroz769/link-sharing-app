@@ -1,0 +1,32 @@
+.tab-container {
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    align-items: center;
+    white-space: nowrap;
+    color: var(--black-90-);
+}
+
+.tab-container.active {
+    background-color: var(--purple-30-);
+    color: var(--purple-90-);
+}
+
+.tab-container:hover {
+    color: var(--purple-90-);
+}
+
+.tab-container:active {
+    background-color: var(--purple-30-);
+    color: var(--purple-90-);
+}
+
+.tab-img {
+    padding: 13px 0 13px 27px;
+}
+
+.tab-text {
+    padding: 13px 27px 13px 0px;
+}
