@@ -2,12 +2,16 @@ import { useContext, useEffect, useState } from "react";
 import Button from "../../Components/Button";
 import Buttonsecondary from "../../Components/Button Secondary/buttonsecondary";
 import "./Preview.css";
-// import GithubIcon from "../../assets/images/icon-github-white.svg";
 import RightArrow from "../../assets/images/icon-arrow-right.svg";
+import RightArrowBlack from "../../assets/images/icon-arrow-right-black.svg";
 import userContext from "../../../context/userContext";
 import { axiosPrivate } from "../../api/axios";
 import { Link, useNavigate } from "react-router-dom";
+import useAuth from "../../../hooks/useAuth";
 import toast from "react-hot-toast";
+import PreviewHeaderSkeleton from "../../Components/Skeleton/PreviewHeaderSkeleton/PreviewHeaderSkeleton";
+import linkContext from "../../../context/linkContext";
+import { Skeleton } from "antd";
 import githubIcon from "../../assets/images/icon-github-white.svg";
 import twitterIcon from "../../assets/images/icon-twitter-white.svg";
 import linkedInIcon from "../../assets/images/icon-linkedin-white.svg";
@@ -22,27 +26,51 @@ import gitLabIcon from "../../assets/images/icon-gitlab-white.svg";
 import hashNodeIcon from "../../assets/images/icon-hashnode-white.svg";
 import stackOverFlowIcon from "../../assets/images/icon-stack-white-overflow.svg";
 import frontendMentorIcon from "../../assets/images/icon-frontend-white-mentor.svg";
+import whatsappIcon from "../../assets/images/icon-whatsapp-white.svg";
+import xdaIcon from "../../assets/images/icon-xda-white.svg";
+import instagramIcon from "../../assets/images/icon-instagram-white.svg";
+import discordIcon from "../../assets/images/icon-discord-white.svg";
+import telegramIcon from "../../assets/images/icon-telegram-white.svg";
+import threadsIcon from "../../assets/images/icon-threads-white.svg";
+import websiteIcon from "../../assets/images/icon-website-white.svg";
+import redditIcon from "../../assets/images/icon-reddit-white.svg";
+import quoraIcon from "../../assets/images/icon-quora-white.svg";
+import tiktokIcon from "../../assets/images/icon-tiktok-white.svg";
+import snapchatIcon from "../../assets/images/icon-snapchat-black.svg";
+import tumblrIcon from "../../assets/images/icon-tumblr-white.svg";
+import fiverrIcon from "../../assets/images/icon-fiverr-white.svg";
+import upworkIcon from "../../assets/images/icon-upwork-white.svg";
+import mediumIcon from "../../assets/images/icon-medium-white.svg";
 
 const transformations =
-    "ar_1:1,c_fill,g_face,r_max,w_104,h_104/c_pad/co_rgb:633CFF,e_outline:outer:4:0/";
+    "f_webp,ar_1:1,c_fill,g_face,r_max,w_300,h_300/c_pad/co_rgb:633CFF,e_outline:outer:14:0/";
 
 const Preview = () => {
+    const isAuthenticated = useAuth();
     const navigate = useNavigate();
-    const { userData } = useContext(userContext);
-    const [links, setLinks] = useState([]);
-    console.log("links---", links);
-    console.log(userData);
-    console.log(userData.profile);
+    useEffect(() => {
+        if (!isAuthenticated) {
+            navigate("/login");
+        }
+    }, [isAuthenticated]);
+    const { userData, isLoading } = useContext(userContext);
+    const { linksData, setLinksData } = useContext(linkContext);
+    const [linksLoading, setLinksLoading] = useState(true);
 
     useEffect(() => {
         (async () => {
             try {
-                const res = await axiosPrivate("/link");
-                console.log(res.data.links);
-                setLinks(res.data.links);
-                console.log(links);
+                if (!isAuthenticated) {
+                    return;
+                }
+                if (linksData.length === 0) {
+                    const res = await axiosPrivate("/link");
+                    setLinksData(res.data.links);
+                }
+                setLinksLoading(false);
             } catch (error) {
                 console.log(error);
+                setLinksLoading(false);
             }
         })();
     }, []);
@@ -61,7 +89,7 @@ const Preview = () => {
             },
         });
     };
-
+    console.log(linksData.length);
     return (
         <div className="preview-parent">
             <div className="preview-blob"></div>
@@ -72,7 +100,44 @@ const Preview = () => {
                 />
                 <Button handleClick={handleCopy} buttonText="Share Link" />
             </div>
-            {userData?.profile && (
+            {isLoading ? (
+                <div className="preview-card">
+                    <PreviewHeaderSkeleton />
+                    <div
+                        className="preview-card-links-parent"
+                        style={
+                            linksData.length > 5
+                                ? {
+                                      maxWidth: "1000px",
+                                      display: "flex",
+                                      justifyContent: "safe center",
+                                      flexWrap: "wrap",
+                                      gap: "20px",
+                                  }
+                                : {
+                                      display: "grid",
+                                      gridTemplateRows: "repeat(5, 1fr)",
+                                      gridAutoFlow: "column",
+                                      gap: "20px",
+                                  }
+                        }
+                    >
+                        {linksLoading
+                            ? [0, 1, 2, 3, 4].map((map, index) => (
+                                  <Skeleton.Button
+                                      active={isLoading}
+                                      key={index}
+                                      style={{
+                                          width: 281,
+                                          height: 56,
+                                          borderRadius: 8,
+                                      }}
+                                  />
+                              ))
+                            : null}
+                    </div>
+                </div>
+            ) : (
                 <div className="preview-card">
                     <div className="preview-card-header">
                         <div className="preview-card-header-img">
@@ -95,55 +160,116 @@ const Preview = () => {
                             )}
                         </div>
                     </div>
-                    <div className="preview-card-links-parent">
-                        {links.map((link, ind) => (
-                            <Link
-                                key={ind}
-                                to={link.link}
-                                target="_blank"
-                                className="preview-card-link"
-                                style={{
-                                    backgroundColor:
-                                        link.platform.backgroundColor,
-                                    cursor: "pointer",
-                                    textDecoration: "none",
-                                }}
-                            >
-                                <div>
-                                    <img
-                                        src={(() => {
-                                            const platformText =
-                                                links[ind]?.platform?.text;
-                                            const platformIcon = {
-                                                GitHub: githubIcon,
-                                                Twitter: twitterIcon,
-                                                LinkedIn: linkedInIcon,
-                                                YouTube: youtubeIcon,
-                                                Facebook: facebookIcon,
-                                                Twitch: twitchIcon,
-                                                DevTo: devToIcon,
-                                                CodeWars: codeWarsIcon,
-                                                CodePen: codePenIcon,
-                                                FreeCodeCamp: freeCodeCampIcon,
-                                                GitLab: gitLabIcon,
-                                                Hashnode: hashNodeIcon,
-                                                StackOverflow:
-                                                    stackOverFlowIcon,
-                                                FrontendMentor:
-                                                    frontendMentorIcon,
-                                            }[platformText];
-
-                                            return platformIcon || null;
-                                        })()}
-                                        alt={link.platform.text}
-                                    />
-                                </div>
-                                <p>{link.platform.text}</p>
-                                <div>
-                                    <img src={RightArrow} alt="Arrow" />
-                                </div>
-                            </Link>
-                        ))}
+                    <div
+                        className="preview-card-links-parent"
+                        style={
+                            linksData.length > 5
+                                ? {
+                                      maxWidth: "1000px",
+                                      display: "flex",
+                                      justifyContent: "safe center",
+                                      flexWrap: "wrap",
+                                      gap: "20px",
+                                  }
+                                : {
+                                      display: "grid",
+                                      gridTemplateRows: "repeat(5, 1fr)",
+                                      gridAutoFlow: "column",
+                                      gap: "20px",
+                                  }
+                        }
+                    >
+                        {linksLoading
+                            ? [0, 1, 2, 3, 4].map((map, index) => (
+                                  <Skeleton.Button
+                                      active={isLoading}
+                                      key={index}
+                                      style={{
+                                          width: 281,
+                                          height: 56,
+                                          borderRadius: 8,
+                                      }}
+                                  />
+                              ))
+                            : linksData.map((link, ind) => (
+                                  <a
+                                      key={ind}
+                                      href={
+                                          link.link.startsWith("http")
+                                              ? link.link
+                                              : `https://${link.link}`
+                                      }
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                      className="preview-card-link"
+                                      style={{
+                                          backgroundColor:
+                                              link.platform.backgroundColor,
+                                          cursor: "pointer",
+                                          textDecoration: "none",
+                                      }}
+                                  >
+                                      <div>
+                                          <img
+                                              src={(() => {
+                                                  const platformText =
+                                                      linksData[ind]?.platform
+                                                          ?.text;
+                                                  const platformIcon = {
+                                                      GitHub: githubIcon,
+                                                      Twitter: twitterIcon,
+                                                      LinkedIn: linkedInIcon,
+                                                      YouTube: youtubeIcon,
+                                                      Facebook: facebookIcon,
+                                                      Twitch: twitchIcon,
+                                                      DevTo: devToIcon,
+                                                      CodeWars: codeWarsIcon,
+                                                      CodePen: codePenIcon,
+                                                      FreeCodeCamp:
+                                                          freeCodeCampIcon,
+                                                      GitLab: gitLabIcon,
+                                                      Hashnode: hashNodeIcon,
+                                                      StackOverflow:
+                                                          stackOverFlowIcon,
+                                                      FrontendMentor:
+                                                          frontendMentorIcon,
+                                                      WhatsApp: whatsappIcon,
+                                                      XDA: xdaIcon,
+                                                      Instagram: instagramIcon,
+                                                      Discord: discordIcon,
+                                                      Telegram: telegramIcon,
+                                                      Threads: threadsIcon,
+                                                      Website: websiteIcon,
+                                                      Reddit: redditIcon,
+                                                      Quora: quoraIcon,
+                                                      TikTok: tiktokIcon,
+                                                      Snapchat: snapchatIcon,
+                                                      Tumblr: tumblrIcon,
+                                                      Fiverr: fiverrIcon,
+                                                      Upwork: upworkIcon,
+                                                      Medium: mediumIcon,
+                                                  }[platformText];
+                                                  return platformIcon || null;
+                                              })()}
+                                              alt={link.platform.text}
+                                          />
+                                      </div>
+                                      <p style={{ color: link.platform.color }}>
+                                          {link.platform.text}
+                                      </p>
+                                      <div>
+                                          <img
+                                              src={
+                                                  link.platform.color ==
+                                                  "#000000"
+                                                      ? RightArrowBlack
+                                                      : RightArrow
+                                              }
+                                              alt="Arrow"
+                                          />
+                                      </div>
+                                  </a>
+                              ))}
                     </div>
                 </div>
             )}

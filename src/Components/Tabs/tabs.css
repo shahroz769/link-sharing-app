@@ -30,3 +30,10 @@
 .tab-text {
     padding: 13px 27px 13px 0px;
 }
+
+@media (width <= 625px) {
+    .tab-img {
+        padding: 11px 27px;
+    }
+}
+

@@ -1,9 +1,12 @@
 import "../Preview/Preview.css";
 import { useContext, useEffect, useState } from "react";
 import RightArrow from "../../assets/images/icon-arrow-right.svg";
+import RightArrowBlack from "../../assets/images/icon-arrow-right-black.svg";
 import userContext from "../../../context/userContext";
 import { axiosPrivate } from "../../api/axios";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
+import PreviewHeaderSkeleton from "../../Components/Skeleton/PreviewHeaderSkeleton/PreviewHeaderSkeleton";
+import { Skeleton } from "antd";
 import githubIcon from "../../assets/images/icon-github-white.svg";
 import twitterIcon from "../../assets/images/icon-twitter-white.svg";
 import linkedInIcon from "../../assets/images/icon-linkedin-white.svg";
@@ -18,16 +21,32 @@ import gitLabIcon from "../../assets/images/icon-gitlab-white.svg";
 import hashNodeIcon from "../../assets/images/icon-hashnode-white.svg";
 import stackOverFlowIcon from "../../assets/images/icon-stack-white-overflow.svg";
 import frontendMentorIcon from "../../assets/images/icon-frontend-white-mentor.svg";
+import whatsappIcon from "../../assets/images/icon-whatsapp-white.svg";
+import xdaIcon from "../../assets/images/icon-xda-white.svg";
+import instagramIcon from "../../assets/images/icon-instagram-white.svg";
+import discordIcon from "../../assets/images/icon-discord-white.svg";
+import telegramIcon from "../../assets/images/icon-telegram-white.svg";
+import threadsIcon from "../../assets/images/icon-threads-white.svg";
+import websiteIcon from "../../assets/images/icon-website-white.svg";
+import redditIcon from "../../assets/images/icon-reddit-white.svg";
+import quoraIcon from "../../assets/images/icon-quora-white.svg";
+import tiktokIcon from "../../assets/images/icon-tiktok-white.svg";
+import snapchatIcon from "../../assets/images/icon-snapchat-black.svg";
+import tumblrIcon from "../../assets/images/icon-tumblr-white.svg";
+import fiverrIcon from "../../assets/images/icon-fiverr-white.svg";
+import upworkIcon from "../../assets/images/icon-upwork-white.svg";
+import mediumIcon from "../../assets/images/icon-medium-white.svg";
 
 const transformations =
-    "ar_1:1,c_fill,g_face,r_max,w_104,h_104/c_pad/co_rgb:633CFF,e_outline:outer:4:0/";
+    "f_webp,ar_1:1,c_fill,g_face,r_max,w_300,h_300/c_pad/co_rgb:633CFF,e_outline:outer:14:0/";
 
 const Share = () => {
-    const navigate = useNavigate();
     const params = useParams();
     const paramToSend = params.username.toLowerCase();
+    const [isLoading, setIsLoading] = useState(true);
     const [userData, setUserData] = useState();
     const [linksData, setLinksData] = useState();
+    const [is404, setIs404] = useState(false);
 
     useEffect(() => {
         (async () => {
@@ -39,89 +58,190 @@ const Share = () => {
                 });
                 setUserData(res.data.user);
                 setLinksData(res.data.links);
-                console.log(res);
+                setIsLoading(false);
             } catch (error) {
                 console.log(error);
+                console.log(error.response.data.code);
+                if (error.response.data.code === 404) {
+                    setIsLoading(false);
+                    setIs404(true);
+                }
             }
         })();
     }, []);
+
     return (
         <div className="preview-parent">
-            <div className="preview-blob"></div>
-            {userData?.profile && (
-                <div className="preview-card">
-                    <div className="preview-card-header">
-                        <div className="preview-card-header-img">
-                            {userData?.profile && (
-                                <img
-                                    src={`${userData?.profile.replace(
-                                        "/upload/",
-                                        `/upload/${transformations}`,
-                                    )}`}
-                                    alt="profile"
-                                />
-                            )}
-                        </div>
-                        <div className="preview-card-header-text">
-                            {userData?.firstName && (
-                                <h2>{`${userData?.firstName} ${userData?.lastName}`}</h2>
-                            )}
-                            {userData?.displayEmail && (
-                                <p>{userData?.displayEmail}</p>
-                            )}
-                        </div>
-                    </div>
-                    <div className="preview-card-links-parent">
-                        {linksData.map((link, ind) => (
-                            <Link
-                                key={ind}
-                                to={link.link}
-                                target="_blank"
-                                className="preview-card-link"
-                                style={{
-                                    backgroundColor:
-                                        link.platform.backgroundColor,
-                                    cursor: "pointer",
-                                    textDecoration: "none",
-                                }}
-                            >
-                                <div>
-                                    <img
-                                        src={(() => {
-                                            const platformText =
-                                            linksData[ind]?.platform?.text;
-                                            const platformIcon = {
-                                                GitHub: githubIcon,
-                                                Twitter: twitterIcon,
-                                                LinkedIn: linkedInIcon,
-                                                YouTube: youtubeIcon,
-                                                Facebook: facebookIcon,
-                                                Twitch: twitchIcon,
-                                                DevTo: devToIcon,
-                                                CodeWars: codeWarsIcon,
-                                                CodePen: codePenIcon,
-                                                FreeCodeCamp: freeCodeCampIcon,
-                                                GitLab: gitLabIcon,
-                                                Hashnode: hashNodeIcon,
-                                                StackOverflow:
-                                                    stackOverFlowIcon,
-                                                FrontendMentor:
-                                                    frontendMentorIcon,
-                                            }[platformText];
+            {is404 || <div className="preview-blob"></div>}
 
-                                            return platformIcon || null;
-                                        })()}
-                                        alt={link.platform.text}
-                                    />
-                                </div>
-                                <p>{link.platform.text}</p>
-                                <div>
-                                    <img src={RightArrow} alt="Arrow" />
-                                </div>
-                            </Link>
+            {isLoading ? (
+                <div className="preview-card">
+                    <PreviewHeaderSkeleton />
+                    <div
+                        className="preview-card-links-parent"
+                        style={
+                            linksData && linksData.length > 5
+                                ? {
+                                      maxWidth: "1000px",
+                                      display: "flex",
+                                      justifyContent: "safe center",
+                                      flexWrap: "wrap",
+                                      gap: "20px",
+                                  }
+                                : {
+                                      display: "grid",
+                                      gridTemplateRows: "repeat(5, 1fr)",
+                                      gridAutoFlow: "column",
+                                      gap: "20px",
+                                  }
+                        }
+                    >
+                        {[0, 1, 2, 3, 4].map((map, index) => (
+                            <Skeleton.Button
+                                active={isLoading}
+                                key={index}
+                                style={{
+                                    width: 281,
+                                    height: 56,
+                                    borderRadius: 8,
+                                }}
+                            />
                         ))}
                     </div>
                 </div>
+            ) : is404 ? (
+                <div className="error-card">
+                    <img
+                        src={
+                            "https://res.cloudinary.com/dke5jqhus/image/upload/f_avif/v1702304618/dev_links/dsxt4vnkvn2sa7kuqnrp.webp"
+                        }
+                        alt="404 Error"
+                    />
+                </div>
+            ) : (
+                userData?.profile && (
+                    <div className="preview-card">
+                        <div className="preview-card-header">
+                            <div className="preview-card-header-img">
+                                {userData?.profile && (
+                                    <img
+                                        src={`${userData?.profile.replace(
+                                            "/upload/",
+                                            `/upload/${transformations}`,
+                                        )}`}
+                                        alt="profile"
+                                    />
+                                )}
+                            </div>
+                            <div className="preview-card-header-text">
+                                {userData?.firstName && (
+                                    <h2>{`${userData?.firstName} ${userData?.lastName}`}</h2>
+                                )}
+                                {userData?.displayEmail && (
+                                    <p>{userData?.displayEmail}</p>
+                                )}
+                            </div>
+                        </div>
+                        <div
+                            className="preview-card-links-parent"
+                            style={
+                                linksData.length > 5
+                                    ? {
+                                          maxWidth: "1000px",
+                                          display: "flex",
+                                          justifyContent: "safe center",
+                                          flexWrap: "wrap",
+                                          gap: "20px",
+                                      }
+                                    : {
+                                          display: "grid",
+                                          gridTemplateRows: "repeat(5, 1fr)",
+                                          gridAutoFlow: "column",
+                                          gap: "20px",
+                                      }
+                            }
+                        >
+                            {linksData.map((link, ind) => (
+                                <a
+                                    key={ind}
+                                    href={
+                                        link.link.startsWith("http")
+                                            ? link.link
+                                            : `https://${link.link}`
+                                    }
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="preview-card-link"
+                                    style={{
+                                        backgroundColor:
+                                            link.platform.backgroundColor,
+                                        cursor: "pointer",
+                                        textDecoration: "none",
+                                    }}
+                                >
+                                    <div>
+                                        <img
+                                            src={(() => {
+                                                const platformText =
+                                                    linksData[ind]?.platform
+                                                        ?.text;
+                                                const platformIcon = {
+                                                    GitHub: githubIcon,
+                                                    Twitter: twitterIcon,
+                                                    LinkedIn: linkedInIcon,
+                                                    YouTube: youtubeIcon,
+                                                    Facebook: facebookIcon,
+                                                    Twitch: twitchIcon,
+                                                    DevTo: devToIcon,
+                                                    CodeWars: codeWarsIcon,
+                                                    CodePen: codePenIcon,
+                                                    FreeCodeCamp:
+                                                        freeCodeCampIcon,
+                                                    GitLab: gitLabIcon,
+                                                    Hashnode: hashNodeIcon,
+                                                    StackOverflow:
+                                                        stackOverFlowIcon,
+                                                    FrontendMentor:
+                                                        frontendMentorIcon,
+                                                    WhatsApp: whatsappIcon,
+                                                    XDA: xdaIcon,
+                                                    Instagram: instagramIcon,
+                                                    Discord: discordIcon,
+                                                    Telegram: telegramIcon,
+                                                    Threads: threadsIcon,
+                                                    Website: websiteIcon,
+                                                    Reddit: redditIcon,
+                                                    Quora: quoraIcon,
+                                                    TikTok: tiktokIcon,
+                                                    Snapchat: snapchatIcon,
+                                                    Tumblr: tumblrIcon,
+                                                    Fiverr: fiverrIcon,
+                                                    Upwork: upworkIcon,
+                                                    Medium: mediumIcon,
+                                                }[platformText];
+                                                return platformIcon || null;
+                                            })()}
+                                            alt={link.platform.text}
+                                        />
+                                    </div>
+                                    <p style={{ color: link.platform.color }}>
+                                        {link.platform.text}
+                                    </p>
+                                    <div>
+                                        <img
+                                            src={
+                                                link.platform.color == "#000000"
+                                                    ? RightArrowBlack
+                                                    : RightArrow
+                                            }
+                                            alt="Arrow"
+                                        />
+                                    </div>
+                                </a>
+                            ))}
+                        </div>
+                    </div>
+                )
             )}
         </div>
     );

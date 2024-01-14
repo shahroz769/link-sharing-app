@@ -2,11 +2,12 @@ import Button from "../../../Components/Button/index.jsx";
 import Buttonsecondary from "../../../Components/Button Secondary/buttonsecondary.jsx";
 import Linkscustomizationempty from "../../../Components/Links Customization Empty/linkscustomizationempty.jsx";
 import Linkscustomization from "../../../Components/Links Customization/linkscustomization.jsx";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { axiosPrivate } from "../../../api/axios.js";
 import { useContext } from "react";
 import linkContext from "../../../../context/linkContext.jsx";
+import LinkInputSkeleton from "../../../Components/LinkInputSkeleton/LinkInputSkeleton.jsx";
 import useAuth from "../../../../hooks/useAuth.jsx";
 import toast from "react-hot-toast";
 import { closestCenter, DndContext } from "@dnd-kit/core";
@@ -18,34 +19,77 @@ import {
 import {
     arrayMove,
     SortableContext,
-    useSortable,
     verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
-
-const getLinksEndpoint = "/link";
 const saveLinksEndpoint = "/link/save";
 
+const linkPatterns = {
+    GitHub: /^((https?:\/\/)?(www\.)?github\.com\/\S+)\/?$/i,
+    Twitter: /^((https?:\/\/)?(www\.)?twitter\.com\/\S+)\/?$/i,
+    LinkedIn: /^((https?:\/\/)?(www\.)?linkedin\.com\/in\/\S+)\/?$/i,
+    YouTube: /^((https?:\/\/)?(www\.)?youtube\.com\/\S+)\/?$/i,
+    Facebook: /^((https?:\/\/)?(www\.)?facebook\.com\/\S+)\/?$/i,
+    Twitch: /^((https?:\/\/)?(www\.)?twitch\.tv\/\S+)\/?$/i,
+    DevTo: /^((https?:\/\/)?(www\.)?dev\.to\/\S+)\/?$/i,
+    CodeWars: /^((https?:\/\/)?(www\.)?codewars\.com\/users\/\S+)\/?$/i,
+    CodePen: /^((https?:\/\/)?(www\.)?codepen\.io\/\S+)\/?$/i,
+    FreeCodeCamp: /^((https?:\/\/)?(www\.)?freecodecamp\.org\/\S+)\/?$/i,
+    GitLab: /^((https?:\/\/)?(www\.)?gitlab\.com\/\S+)\/?$/i,
+    Hashnode: /^((https?:\/\/)?(www\.)?hashnode\.com\/@\S+\/?)$/i,
+    StackOverflow:
+        /^((https?:\/\/)?(www\.)?stackoverflow\.com\/users\/\S+)\/?$/i,
+    FrontendMentor:
+        /^((https?:\/\/)?(www\.)?frontendmentor\.io\/profile\/\S+)\/?$/i,
+    WhatsApp: /^((https?:\/\/)?wa\.me\/\S+)\/?$/i,
+    XDA: /^((https?:\/\/)?(www\.)?xdaforums\.com\/m\/\S+)\/?$/i,
+    Instagram: /^((https?:\/\/)?(www\.)?instagram\.com\/\S+)\/?$/i,
+    Discord: /^((https?:\/\/)?discord\.com\/users\/\S+)\/?$/i,
+    Telegram: /^((https?:\/\/)?t\.me\/\S+)\/?$/i,
+    Threads: /^((https?:\/\/)?threads\.com\/user\/\S+)\/?$/i,
+    Website: /^((https?:\/\/)?\S+)\/?$/i,
+    Reddit: /^((https?:\/\/)?(www\.)?reddit\.com\/user\/\S+)\/?$/i,
+    Quora: /^((https?:\/\/)?(www\.)?quora\.com\/profile\/\S+)\/?$/i,
+    TikTok: /^((https?:\/\/)?(www\.)?tiktok\.com\/@\S+)\/?$/i,
+    Snapchat: /^((https?:\/\/)?(www\.)?snapchat\.com\/add\/\S+)\/?$/i,
+    Tumblr: /^((https?:\/\/)?(www\.)?tumblr\.com\/\S*)$/i,
+    Fiverr: /^((https?:\/\/)?(www\.)?fiverr\.com\/\S+)\/?$/i,
+    Upwork: /^((https?:\/\/)?(www\.)?\.upwork\.com\/freelancers\/\S+)\/?$/i,
+    Medium: /^((https?:\/\/)?medium\.com\/@\S+)\/?$/i,
+};
+
 const Linkstab = () => {
-    const linksCustomizationMainRef = useRef(null);
-    const shouldScrollToBottomRef = useRef(false);
     const navigate = useNavigate();
     const isAuthenticated = useAuth();
+
     useEffect(() => {
         if (!isAuthenticated) {
             navigate("/login");
         }
     }, [isAuthenticated, navigate]);
+    const [isLoading, setIsLoading] = useState(true);
+    const [disable, setDisable] = useState(false);
+
     const { linksData, updateLinksData, setLinksData } =
         useContext(linkContext);
-    const [order, setOrder] = useState(linksData.length + 1);
+    const [order, setOrder] = useState(1);
+
     useEffect(() => {
         (async () => {
+            if (!isAuthenticated) {
+                navigate("/login");
+                return;
+            }
             try {
-                const res = await axiosPrivate(getLinksEndpoint);
-                res?.data?.links && setLinksData(res.data.links);
-                res?.data?.links && setOrder(res.data.links.length + 1);
+                if (linksData.length === 0) {
+                    const res = await axiosPrivate("/link");
+                    res?.data?.links && setLinksData(res.data.links);
+                }
+                setIsLoading(false);
+                return;
             } catch (error) {
-                console.log(error);
+                console.error(error);
+                setIsLoading(false);
+                return;
             }
         })();
     }, []);
@@ -61,6 +105,7 @@ const Linkstab = () => {
                 (link) => link.order === active.id,
             );
             const newIndex = links.findIndex((link) => link.order === over.id);
+            console.log(oldIndex, newIndex);
             const newLinks = arrayMove(links, oldIndex, newIndex);
             const updatedLinks = newLinks.map((link, index) => ({
                 ...link,
@@ -70,30 +115,16 @@ const Linkstab = () => {
         });
     };
 
-    const end = () => {
-        const updatedLinksDataWithOrder = linksData.map((link, i) => ({
-            ...link,
-            order: i + 1,
-        }));
-        setLinksData(updatedLinksDataWithOrder);
-    };
-
     const handleAddLinkClick = () => {
         updateLinksData(order);
-        setOrder(order + 1);
-        // Set the flag to true when the "Add new link" button is clicked
-        shouldScrollToBottomRef.current = true;
+        // setOrder(1);
+        setLinksData((prev) =>
+            prev.map((link, index) => ({
+                ...link,
+                order: index + 1,
+            })),
+        );
     };
-    useEffect(() => {
-        if (shouldScrollToBottomRef.current) {
-            // Scroll to the bottom when linksData changes and the flag is true
-            linksCustomizationMainRef.current.scrollTop =
-                linksCustomizationMainRef.current.scrollHeight;
-            // Reset the flag to false after scrolling
-            shouldScrollToBottomRef.current = false;
-        }
-    }, [linksData]);
-
     const handleRemoveLink = (index) => {
         const updatedLinksData = linksData.filter((_, i) => i !== index);
         const updatedLinksDataWithOrder = updatedLinksData.map((link, i) => ({
@@ -105,11 +136,31 @@ const Linkstab = () => {
     };
 
     const saveToDB = async () => {
-        console.log(linksData);
         try {
+            setDisable(true);
+
+            const invalidLink = linksData.find((link) => {
+                const platform = link.platform.text;
+                const pattern = linkPatterns[platform];
+                return !pattern.test(link.link);
+            });
+
+            if (invalidLink) {
+                console.log("Invalid link:", invalidLink);
+                toast.error("Invalid link. Couldn't save. Try again.", {
+                    duration: 2000,
+                    position: "bottom-center",
+                    style: {
+                        backgroundColor: "var(--black-90-)",
+                        color: "var(--white-90-)",
+                    },
+                });
+                return;
+            }
+
             const res = await axiosPrivate.post(saveLinksEndpoint, linksData);
             console.log(res);
-            toast.success("Links saved successfully!", {
+            toast.success("Updated successfully!", {
                 duration: 2000,
                 position: "bottom-center",
                 style: {
@@ -129,6 +180,8 @@ const Linkstab = () => {
                 },
             });
             return;
+        } finally {
+            setDisable(false);
         }
     };
 
@@ -146,10 +199,7 @@ const Linkstab = () => {
                     buttonSecondaryText="+ Add new link"
                     onClick={handleAddLinkClick}
                 />
-                <div
-                    className="links-customization-main"
-                    ref={linksCustomizationMainRef}
-                >
+                <div className="links-customization-main">
                     <DndContext
                         collisionDetection={closestCenter}
                         onDragEnd={onDragEnd}
@@ -160,23 +210,30 @@ const Linkstab = () => {
                         ]}
                     >
                         <SortableContext
-                            items={linksData.map((link) => link.order)}
+                            items={
+                                linksData
+                                    ? linksData.map((link) => link.order)
+                                    : []
+                            }
                             strategy={verticalListSortingStrategy}
                         >
-                            {linksData?.length ? (
-                                linksData.map((link, ind) => {
-                                    return (
-                                        <Linkscustomization
-                                            key={link.link}
-                                            link={link || ""}
-                                            order={link.order}
-                                            index={ind}
-                                            // link={link.link || ""}
-                                            platform={link.platform.text || ""}
-                                            onRemove={handleRemoveLink}
-                                        />
-                                    );
-                                })
+                            {isLoading ? (
+                                <>
+                                    <LinkInputSkeleton />
+                                    <LinkInputSkeleton />
+                                </>
+                            ) : linksData && linksData.length ? (
+                                linksData.map((link, ind) => (
+                                    <Linkscustomization
+                                        key={`${link.link}-${link.order}`}
+                                        link={link || ""}
+                                        order={link.order}
+                                        index={ind}
+                                        loading={isLoading}
+                                        platform={link.platform.text || ""}
+                                        onRemove={handleRemoveLink}
+                                    />
+                                ))
                             ) : (
                                 <Linkscustomizationempty />
                             )}
@@ -186,7 +243,12 @@ const Linkstab = () => {
             </div>
             <div className="links-customization-footer">
                 <div className="links-customization-footer-btn">
-                    <Button handleClick={saveToDB} buttonText="Save" />
+                    <Button
+                        disabled={disable}
+                        loadingText={disable && "Saving..."}
+                        handleClick={saveToDB}
+                        buttonText="Save"
+                    />
                 </div>
             </div>
         </>

@@ -1,4 +1,4 @@
-import { createContext, useState } from "react";
+import { createContext, useState, useEffect } from "react";
 
 const linkContext = createContext();
 
@@ -7,8 +7,8 @@ export const LinkProvider = ({ children }) => {
 
     const updateLinksData = (order, link, platform) => {
         setLinksData((prev) => [
-            ...linksData,
             { order: order, link: link || "", platform: platform || "" },
+            ...prev,
         ]);
     };
 

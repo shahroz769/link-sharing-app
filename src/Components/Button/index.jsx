@@ -1,9 +1,28 @@
 import "./index.css";
+import { LoadingOutlined } from "@ant-design/icons";
+import { Spin } from "antd";
 
-const Button = ({ buttonText, handleClick }) => {
+const Button = ({ buttonText, loadingText, handleClick, disabled }) => {
     return (
-        <button onClick={handleClick || null} className="button">
-            <h3>{buttonText}</h3>
+        <button
+            disabled={disabled && disabled}
+            onClick={handleClick || null}
+            className="button"
+        >
+            {disabled && (
+                <Spin
+                    indicator={
+                        <LoadingOutlined
+                            style={{
+                                fontSize: 16,
+                                color: "white",
+                            }}
+                            spin
+                        />
+                    }
+                />
+            )}
+            <h3>{disabled ? loadingText : buttonText}</h3>
         </button>
     );
 };

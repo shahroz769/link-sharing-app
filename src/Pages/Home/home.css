@@ -10,7 +10,7 @@
     gap: 24px;
     flex: 1;
     /* overflow: hidden; */
-    padding: 24px;
+    padding: 24px 24px 0 24px;
 }
 
 .home-main > div {
@@ -21,14 +21,15 @@
 .links-customization-parent {
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
-    gap: 40px;
+    /* justify-content: space-between; */
+    /* gap: 34px; */
     flex: 0.6;
 }
 .links-customization {
     padding: 40px 40px 0 40px;
     display: flex;
     flex-direction: column;
+    height: 100%;
 }
 
 .links-customization-header {
@@ -44,12 +45,10 @@
     display: flex;
     flex-direction: column;
     gap: 24px;
-    padding-right: 8px;
-    flex-basis: 550px;
     margin-top: 24px;
-    max-height: 53svh;
     overflow-y: auto;
     overflow-x: hidden;
+    height: 100%;
 }
 
 .links-customization-links {
@@ -57,7 +56,7 @@
     flex-direction: column;
     gap: 40px;
     background-color: var(--white-60-);
-    padding: 62.5px 0;
+    padding: 62.5px 20px;
     border-radius: 12px;
     align-items: center;
 }
@@ -76,10 +75,16 @@
     justify-content: end;
     padding: 24px 40px;
     border-top: 1px solid var(--black-30-);
+    position: sticky;
+    bottom: 0;
+    left: 0;
+    background-color: var(--white-90-);
+    border-radius: 0 0 12px 12px;
+    margin-top: auto;
 }
 
 .links-customization-footer-btn {
-    max-width: 91px;
+    width: max-content;
     align-self: flex-end;
 }
 
@@ -89,17 +94,19 @@
     align-items: center;
     overflow: auto;
     flex: 0.4;
-    padding: 101.5px 0 0 0;
+    /* padding: 101.5px 0 0 0; */
+    padding: 60px 0 0 0;
 }
 
 .mockup {
     position: relative;
     width: 308px;
     height: 632px;
-    background-image: url(../../assets/images/mockup-border.png);
+    background-image: url(https://res.cloudinary.com/dke5jqhus/image/upload/f_webp/v1702298868/dev_links/mockup-border_vmrdd7.png);
     background-repeat: no-repeat;
     background-position: center;
     background-size: 100%;
+    position: fixed;
 }
 
 .mockup-img {
@@ -132,10 +139,14 @@
 }
 
 .mockup-head .mockup-head-img {
-    width: 106px;
-    height: 106px;
+    width: 104px;
+    height: 104px;
     border-radius: 50%;
     background-color: #eeeeee;
+}
+.mockup-head .mockup-head-img img {
+    width: 100%;
+    height: 100%;
 }
 
 .mockup-head-title {
@@ -151,7 +162,6 @@
     height: 16px;
     background-color: #eeeeee;
     border-radius: 100px;
-    min-height: 27px;
 }
 
 .mockup-head-email-empty {
@@ -159,7 +169,6 @@
     height: 8px;
     background-color: #eeeeee;
     border-radius: 100px;
-    min-height: 21px;
 }
 
 .mockup-links-parent {
@@ -191,4 +200,45 @@
     left: 50%;
     bottom: 28px;
     transform: translateX(-50%);
+}
+
+@media (width <=850px) {
+    .links-customization-parent {
+        flex: 1;
+    }
+}
+
+@media (width <=600px) {
+    .links-customization {
+        padding: 24px 24px 0 24px;
+    }
+    .links-customization-empty-image img {
+        width: 175px;
+    }
+    .links-customization-footer {
+        padding: 24px;
+    }
+}
+
+@media (width <=440px) {
+    .home-main {
+        padding: 16px 0 0 0;
+    }
+    h2 {
+        font-size: 24px !important;
+    }
+    .links-customization-empty-image img {
+        width: 125px;
+    }
+    .links-customization-links {
+        padding: 46.5px 20px;
+    }
+
+    .links-customization-footer {
+        padding: 16px 24px;
+    }
+
+    .links-customization-footer-btn {
+        width: 100%;
+    }
 }

@@ -11,6 +11,7 @@
     border: 1px solid var(--black-30-);
     border-radius: 8px;
     overflow: hidden;
+    background-color: var(--white-90-);
 }
 .input-container input {
     outline: none;
@@ -22,6 +23,16 @@
     padding-left: 16px;
 }
 
-.link-url .input-container {
-    background-color: var(--white-90-);
+.input-error {
+    color: var(--red-90-);
+    white-space: nowrap;
+    padding-right: 16px;
+    user-select: none;
+}
+
+.password-hint {
+    font-size: 12px;
+    line-height: 150%;
+    font-weight: 400;
+    color: var(--black-60-);
 }

@@ -1,4 +1,5 @@
 import "./tabs.css";
+
 const Tabs = ({
     imgSrc,
     altText,
@@ -6,6 +7,7 @@ const Tabs = ({
     clickHandler,
     clickProp,
     active,
+    screenWidth,
 }) => {
     return (
         <div
@@ -15,9 +17,11 @@ const Tabs = ({
             <div className="tab-img">
                 <img src={imgSrc} alt={altText} />
             </div>
-            <div className="tab-text">
-                <h3>{tabText}</h3>
-            </div>
+            {screenWidth || (
+                <div className="tab-text">
+                    <h3>{tabText}</h3>
+                </div>
+            )}
         </div>
     );
 };

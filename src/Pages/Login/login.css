@@ -1,13 +1,13 @@
-.login-container{
+.login-container {
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: safe center;
     align-items: center;
     gap: 52px;
     height: 100svh;
 }
 
-.login-card{
+.login-card {
     background-color: var(--white-90-);
     padding: 40px;
     border-radius: 8px;
@@ -18,8 +18,25 @@
     gap: 40px;
 }
 
-.login-fields{
+.login-fields {
     display: flex;
     flex-direction: column;
     gap: 24px;
+}
+
+@media (width <=440px) {
+    .login-container {
+        background-color: var(--white-90-);
+        justify-content: flex-start;
+        padding: 24px;
+    }
+
+    .login-card {
+        padding: 0;
+        width: 100%;
+    }
+
+    .auth-logo {
+        align-self: flex-start;
+    }
 }

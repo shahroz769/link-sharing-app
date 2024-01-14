@@ -1,16 +1,12 @@
 import { styled } from "@mui/material/styles";
 import { Button as MuiButton } from "@mui/material";
-import Mockup from "../../../assets/images/mockup-border.svg";
 import Button from "../../../Components/Button/index.jsx";
-import Buttonsecondary from "../../../Components/Button Secondary/buttonsecondary.jsx";
-import emptyLinks from "../../../assets/images/illustration-empty.svg";
-import Linkscustomizationempty from "../../../Components/Links Customization Empty/linkscustomizationempty.jsx";
-import Linkscustomization from "../../../Components/Links Customization/linkscustomization.jsx";
-// import uploadImageIcon from "../../../assets/images/icon-upload-image.svg";
 import IconImageUpload from "../../../assets/images/IconImageUpload.jsx";
 import InputField from "../../../Components/Input Field/index.jsx";
+import IconLogout from "../../../assets/images/IconLogout";
+import { IconButton } from "@mui/material";
 import "./profiletab.css";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import { axiosPrivate } from "../../../api/axios.js";
 import { useContext } from "react";
@@ -18,6 +14,10 @@ import linkContext from "../../../../context/linkContext.jsx";
 import userContext from "../../../../context/userContext.jsx";
 import Cookies from "js-cookie";
 import toast from "react-hot-toast";
+import useAuth from "../../../../hooks/useAuth.jsx";
+import PreviewFieldsSkeleton from "../../../Components/PreviewFieldsSkeleton/PreviewFieldsSkeleton.jsx";
+import { Skeleton } from "antd";
+import { useNavigate } from "react-router-dom";
 
 const VisuallyHiddenInput = styled("input")({
     clip: "rect(0 0 0 0)",
@@ -34,89 +34,125 @@ const VisuallyHiddenInput = styled("input")({
 const getLinksEndpoint = "/link";
 
 const transformations =
-    "ar_1:1,c_fill,g_face,r_12,w_193,h_193/c_pad/co_rgb:000000,e_colorize:50/";
-
-console.log(transformations)
+    "f_webp,ar_1:1,c_fill,g_face,r_12,w_300,h_300/c_pad/co_rgb:000000,e_colorize:50/";
 
 const Profiletab = () => {
+    const navigate = useNavigate();
     const { linksData, updateLinksData, setLinksData } =
         useContext(linkContext);
-    const { userData, setUserData } = useContext(userContext);
-
-    const [firstName, setFirstName] = useState("");
-    const [lastName, setLastName] = useState("");
-    const [email, setEmail] = useState("");
+    const { userData, setUserData, isLoading } = useContext(userContext);
+    const [isLogoutHovered, setIsLogoutHovered] = useState(false);
     const [userImage, setUserImage] = useState(null);
+    const [disable, setDisable] = useState(false);
+    const [isImageUploading, setIsImageUploading] = useState(false);
+    const isAuthenticated = useAuth();
+    const {setIsDataFetched } = useContext(userContext);
+
+    useEffect(() => {
+        setUserImage(userData.profile);
+    }, [userData]);
 
     useEffect(() => {
         (async () => {
-            console.log("Fetching user data");
+            if (!isAuthenticated) {
+                navigate("/login");
+                return;
+            }
             try {
-                const resLinks = await axiosPrivate(getLinksEndpoint);
-                resLinks?.data?.links && setLinksData(resLinks.data.links);
-                const res = await axiosPrivate("/profile");
-                if (res.data.status) {
-                    setFirstName(res.data.user.firstName);
-                    setLastName(res.data.user.lastName);
-                    setEmail(res.data.user.displayEmail);
-                    setUserImage(res.data.user.profile);
+                if (!linksData[0]?.link) {
+                    const resLinks = await axiosPrivate(getLinksEndpoint);
+                    resLinks?.data?.links && setLinksData(resLinks.data.links);
                 }
+                return;
             } catch (error) {
                 console.error(error.message);
+                return;
             }
         })();
     }, []);
 
-    const handleImage = async (file) => {
-        try {
-            const formData = new FormData();
-            formData.append("file", file);
-            console.log(formData);
-            const res = await axios.post(
-                import.meta.env.VITE_URL + "/profile/image",
-                formData,
-                {
-                    headers: {
-                        "Content-Type": "multipart/form-data",
-                        Authorization: `Bearer ${Cookies.get("jwt")}`,
-                    },
+    const handleImage = (file) => {
+        if (isImageUploading) {
+            return;
+        }
+        console.log("UPLOAD");
+        setIsImageUploading(true);
+        const formData = new FormData();
+        formData.append("file", file);
+        const promise = axios
+            .post(import.meta.env.VITE_URL + "/profile/image", formData, {
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                    Authorization: `Bearer ${Cookies.get("jwt")}`,
                 },
-            );
-            console.log(res);
-            setUserImage(res.data.url);
-            setUserData({
-                ...userData,
-                profile: res.data.url,
-            });
-            toast.success("Image uploaded.", {
-                duration: 2000,
-                position: "bottom-center",
+            })
+            .then((res) => {
+                console.log(res);
+                setUserImage(res.data.url);
+                setUserData({
+                    ...userData,
+                    profile: res.data.url,
+                });
+            })
+            .catch((error) => {
+                console.error(error);
+                if (
+                    error.response &&
+                    error.response.data.message.includes("File size too large.")
+                ) {
+                    error.message = "File size exceeds 10MB.";
+                } else if (error?.response?.data) {
+                    error.message = "Failed to upload image. try again";
+                } else {
+                    error.message = "No response from the server.";
+                }
+                return Promise.reject(error);
+            })
+            .finally(() => setIsImageUploading(false));
+        toast.promise(
+            promise,
+            {
+                loading: "Uploading image...",
+                success: "Image uploaded successfully!",
+                error: (err) => err.message,
+            },
+            {
                 style: {
-                    backgroundColor: "var(--black-90-)",
+                    background: "var(--black-90-)",
                     color: "var(--white-90-)",
                 },
-            });
-        } catch (error) {
-            console.error(error);
+                loading: {
+                    position: "bottom-center",
+                },
+                success: {
+                    duration: 2000,
+                    position: "bottom-center",
+                },
+                error: {
+                    duration: 2000,
+                    position: "bottom-center",
+                },
+            },
+        );
+    };
+
+    const handleEnterKeyPress = (event) => {
+        if (event.key === "Enter") {
+            saveUserDetails();
         }
     };
 
     const saveUserDetails = async () => {
         try {
-            if (!firstName || !lastName) {
+            setDisable(true);
+            if (!userData.firstName || !userData.lastName) {
                 console.error("Required filds must be provided");
                 return;
             }
             const res = await axiosPrivate.post("/profile/update-user", {
-                firstName,
-                lastName,
-                email,
-            });
-            setUserData({
-                ...userData,
-                firstName,
-                lastName,
-                displayEmail: email,
+                firstName: userData.firstName,
+                lastName: userData.lastName,
+                displayEmail: userData.displayEmail,
             });
             console.log(res);
             toast.success("Saved successfully!", {
@@ -137,6 +173,8 @@ const Profiletab = () => {
                     color: "var(--white-90-)",
                 },
             });
+        } finally {
+            setDisable(false);
         }
     };
 
@@ -144,7 +182,25 @@ const Profiletab = () => {
         <>
             <div className="profile-details">
                 <div className="profile-details-header">
-                    <h2>Profile Details</h2>
+                    <div className="profile-details-heading">
+                        <h2>Profile Details</h2>
+                        <IconButton
+                        className="logout-btn"
+                            onMouseEnter={() => setIsLogoutHovered(true)}
+                            onMouseLeave={() => setIsLogoutHovered(false)}
+                            onClick={() => {
+                                setIsDataFetched(false);
+                                setUserData({});
+                                setLinksData([]);
+                                Cookies.remove("jwt");
+                                navigate("/");
+                            }}
+                        >
+                            <IconLogout
+                                fill={isLogoutHovered && "var(--red-90-)"}
+                            />
+                        </IconButton>
+                    </div>
                     <p>
                         Add your details to create a personal touch to your
                         profile.
@@ -155,86 +211,126 @@ const Profiletab = () => {
                         <div className="profile-picture-text">
                             <p>Profile picture</p>
                         </div>
-                        <MuiButton
-                            component="label"
-                            className="upload-profile-image-main"
-                        >
-                            <VisuallyHiddenInput
-                                onChange={(e) => handleImage(e.target.files[0])}
-                                type="file"
-                                accept="image/png, image/jpeg"
+                        {isLoading ? (
+                            <Skeleton.Button
+                                active
+                                style={{
+                                    width: 190,
+                                    height: 190,
+                                    borderRadius: 12,
+                                }}
                             />
-                            <div className="upload-image">
-                                {userImage && (
-                                    <img
-                                        src={`${userImage.replace(
-                                            "/upload/",
-                                            `/upload/${transformations}`,
-                                        )}`}
-                                        alt="user"
-                                    />
+                        ) : (
+                            <MuiButton
+                                sx={{ borderRadius: "12px" }}
+                                component="label"
+                                className="upload-profile-image-main"
+                            >
+                                <VisuallyHiddenInput
+                                    onChange={(e) =>
+                                        handleImage(e.target.files[0])
+                                    }
+                                    type="file"
+                                    accept="image/png, image/jpeg"
+                                />
+                                <div className="upload-image">
+                                    {userImage && (
+                                        <img
+                                            src={`${userImage.replace(
+                                                "/upload/",
+                                                `/upload/${transformations}`,
+                                            )}`}
+                                            alt="user"
+                                        />
+                                    )}
+                                </div>
+                                {userImage ? (
+                                    <>
+                                        <IconImageUpload color="var(--white-90-)" />
+                                        <h3
+                                            style={{
+                                                color: "var(--white-90-)",
+                                            }}
+                                        >
+                                            Change Image
+                                        </h3>
+                                    </>
+                                ) : (
+                                    <>
+                                        <IconImageUpload />
+                                        <h3>+ Upload Image</h3>
+                                    </>
                                 )}
-                            </div>
-
-                            {/* <img
-                                src={uploadImageIcon}
-                                alt="Upload Profile Image"
-                            /> */}
-                            {userImage ? (
-                                <>
-                                    <IconImageUpload color="var(--white-90-)" />
-                                    <h3 style={{ color: "var(--white-90-)" }}>
-                                        Change Image
-                                    </h3>
-                                </>
-                            ) : (
-                                <>
-                                    <IconImageUpload />
-                                    <h3>+ Upload Image</h3>
-                                </>
-                            )}
-                        </MuiButton>
+                            </MuiButton>
+                        )}
                         <div className="profile-picture-instructions">
                             <p>
-                                Suggestion: Use image dimensions as 1024x1024px
-                                or less. Use PNG or JPG format.
+                                Suggestion: Image size should be less than 10MB.
+                                Use PNG or JPG format.
                             </p>
                         </div>
                     </div>
-                    <div className="profile-details-data">
-                        <div className="profile-first-name">
-                            <p>First name*</p>
-                            <InputField
-                                value={firstName}
-                                onInputChange={(val) => setFirstName(val)}
-                                placeholderText="e.g. John"
-                                imgYes={true}
-                            />
+                    {isLoading ? (
+                        <PreviewFieldsSkeleton />
+                    ) : (
+                        <div className="profile-details-data">
+                            <div className="profile-first-name">
+                                <p>First name*</p>
+                                <InputField
+                                    value={userData.firstName || ""}
+                                    onInputChange={(val) =>
+                                        setUserData({
+                                            ...userData,
+                                            firstName: val,
+                                        })
+                                    }
+                                    placeholderText="e.g. John"
+                                    imgYes={true}
+                                    onKeyPress={handleEnterKeyPress}
+                                />
+                            </div>
+                            <div className="profile-last-name">
+                                <p>Last name*</p>
+                                <InputField
+                                    value={userData.lastName || ""}
+                                    onInputChange={(val) =>
+                                        setUserData({
+                                            ...userData,
+                                            lastName: val,
+                                        })
+                                    }
+                                    placeholderText="e.g. Appleseed"
+                                    imgYes={true}
+                                    onKeyPress={handleEnterKeyPress}
+                                />
+                            </div>
+                            <div className="profile-email">
+                                <p>Email</p>
+                                <InputField
+                                    value={userData.displayEmail || ""}
+                                    onInputChange={(val) =>
+                                        setUserData({
+                                            ...userData,
+                                            displayEmail: val,
+                                        })
+                                    }
+                                    placeholderText="e.g. email@example.com"
+                                    imgYes={true}
+                                    onKeyPress={handleEnterKeyPress}
+                                />
+                            </div>
                         </div>
-                        <div className="profile-last-name">
-                            <p>Last name*</p>
-                            <InputField
-                                value={lastName}
-                                onInputChange={(val) => setLastName(val)}
-                                placeholderText="e.g. Appleseed"
-                                imgYes={true}
-                            />
-                        </div>
-                        <div className="profile-email">
-                            <p>Email</p>
-                            <InputField
-                                value={email}
-                                onInputChange={(val) => setEmail(val)}
-                                placeholderText="e.g. email@example.com"
-                                imgYes={true}
-                            />
-                        </div>
-                    </div>
+                    )}
                 </div>
             </div>
             <div className="profile-details-footer">
                 <div className="profile-details-footer-btn">
-                    <Button handleClick={saveUserDetails} buttonText="Save" />
+                    <Button
+                        disabled={disable}
+                        loadingText={disable && "Saving..."}
+                        handleClick={saveUserDetails}
+                        buttonText="Save"
+                    />
                 </div>
             </div>
         </>
