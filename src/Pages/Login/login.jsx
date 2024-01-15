@@ -6,12 +6,11 @@ import logoLarge from "../../assets/images/logo-devlinks-large.svg";
 import emailIcon from "../../assets/images/icon-email.svg";
 import passwordIcon from "../../assets/images/icon-password.svg";
 import Button from "../../Components/Button";
-import githubLogoIcon from "../../assets/images/icon-github-mark-white.svg";
-import googleLogoIcon from "../../assets/images/icon-google.svg";
 import { useNavigate, useLocation } from "react-router-dom";
 import { axiosPrivate } from "../../api/axios";
 import Cookies from "js-cookie";
 import useAuth from "../../../hooks/useAuth";
+import { motion, useIsPresent } from "framer-motion";
 const LOGIN_URL = "/login";
 
 const Login = () => {
@@ -19,11 +18,13 @@ const Login = () => {
     const isAuthenticated = useAuth();
     useEffect(() => {
         if (isAuthenticated) {
+            setNavigatingTo("Home");
             navigate("/");
         }
     }, [isAuthenticated, navigate]);
     const location = useLocation();
     const from = location.state?.from?.pathname || "/";
+    const [navigatingTo, setNavigatingTo] = useState(null);
     const [email, setEmail] = useState("");
     const [emailError, setEmailError] = useState(false);
     const [password, setPassword] = useState("");
@@ -53,10 +54,10 @@ const Login = () => {
                 return;
             }
             const res = await axiosPrivate.post(LOGIN_URL, { email, password });
-            console.log("res", res);
             Cookies.set("jwt", res.data.token, { expires: 7 });
             setEmail("");
             setPassword("");
+            setNavigatingTo("Home");
             navigate(from, { replace: true });
         } catch (err) {
             console.log(err);
@@ -85,7 +86,7 @@ const Login = () => {
             setDisable(false);
         }
     };
-
+    const isPresent = useIsPresent();
     return (
         <div className="login-container">
             <div className="auth-logo">
@@ -125,24 +126,13 @@ const Login = () => {
                         handleClick={userLogin}
                         buttonText="Login"
                     />
-                    {/* <div className="continue-socials">
-                        <div className="line"></div>
-                        <h3>Or continue with</h3>
-                    </div>
-                    <div className="login-socials">
-                        <div className="login-with-google">
-                            <img src={googleLogoIcon} alt="Google Logo" />
-                            <h3>Google</h3>
-                        </div>
-                        <div className="login-with-github">
-                            <img src={githubLogoIcon} alt="Github Logo" />
-                            <h3>GitHub</h3>
-                        </div>
-                    </div> */}
                     <p>
                         Don’t have an account?{" "}
                         <span
-                            onClick={() => navigate("/signup")}
+                            onClick={() => {
+                                navigate("/signup");
+                                setNavigatingTo("Signup");
+                            }}
                             className="create-account"
                         >
                             Create account
@@ -150,6 +140,26 @@ const Login = () => {
                     </p>
                 </div>
             </div>
+            <motion.div
+                initial={{ scaleX: 1 }}
+                animate={{
+                    scaleX: 0,
+                    transition: { duration: 0.6, ease: [0.83, 0, 0.17, 1] },
+                }}
+                exit={{
+                    scaleX: 1,
+                    transition: { duration: 0.6, ease: [0.83, 0, 0.17, 1] },
+                }}
+                style={{
+                    originX: isPresent ? 0 : 1,
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                }}
+                className="privacy-screen"
+            >
+                <h1 style={{ color: "white" }}>{navigatingTo || "Login"}</h1>
+            </motion.div>
         </div>
     );
 };

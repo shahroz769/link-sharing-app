@@ -123,3 +123,13 @@ input::placeholder {
     -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
     background-color: var(--purple-90-);
 }
+
+.privacy-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #806ada;
+    z-index: 9999;
+}

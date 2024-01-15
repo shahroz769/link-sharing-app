@@ -11,6 +11,7 @@ import LinkInputSkeleton from "../../../Components/LinkInputSkeleton/LinkInputSk
 import useAuth from "../../../../hooks/useAuth.jsx";
 import toast from "react-hot-toast";
 import { closestCenter, DndContext } from "@dnd-kit/core";
+import { motion, useIsPresent } from "framer-motion";
 import {
     restrictToVerticalAxis,
     restrictToWindowEdges,
@@ -96,16 +97,14 @@ const Linkstab = () => {
 
     const onDragEnd = (event) => {
         const { active, over } = event;
-        console.log(event);
         if (active.id === over.id) {
             return;
         }
         setLinksData((links) => {
             const oldIndex = links.findIndex(
-                (link) => link.order === active.id,
+                (link) => link.order === active.id
             );
             const newIndex = links.findIndex((link) => link.order === over.id);
-            console.log(oldIndex, newIndex);
             const newLinks = arrayMove(links, oldIndex, newIndex);
             const updatedLinks = newLinks.map((link, index) => ({
                 ...link,
@@ -122,7 +121,7 @@ const Linkstab = () => {
             prev.map((link, index) => ({
                 ...link,
                 order: index + 1,
-            })),
+            }))
         );
     };
     const handleRemoveLink = (index) => {
@@ -146,7 +145,6 @@ const Linkstab = () => {
             });
 
             if (invalidLink) {
-                console.log("Invalid link:", invalidLink);
                 toast.error("Invalid link. Couldn't save. Try again.", {
                     duration: 2000,
                     position: "bottom-center",
@@ -159,7 +157,6 @@ const Linkstab = () => {
             }
 
             const res = await axiosPrivate.post(saveLinksEndpoint, linksData);
-            console.log(res);
             toast.success("Updated successfully!", {
                 duration: 2000,
                 position: "bottom-center",
@@ -184,7 +181,7 @@ const Linkstab = () => {
             setDisable(false);
         }
     };
-
+    const isPresent = useIsPresent();
     return (
         <>
             <div className="links-customization">
@@ -251,6 +248,26 @@ const Linkstab = () => {
                     />
                 </div>
             </div>
+            <motion.div
+                initial={{ scaleX: 1 }}
+                animate={{
+                    scaleX: 0,
+                    transition: { duration: 0.6, ease: [0.83, 0, 0.17, 1] },
+                }}
+                exit={{
+                    scaleX: 1,
+                    transition: { duration: 0.6, ease: [0.83, 0, 0.17, 1] },
+                }}
+                style={{
+                    originX: isPresent ? 0 : 1,
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                }}
+                className="privacy-screen"
+            >
+                <h1 style={{ color: "white" }}>"Links"</h1>
+            </motion.div>
         </>
     );
 };

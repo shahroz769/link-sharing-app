@@ -5,8 +5,7 @@ import logoLarge from "../../assets/images/logo-devlinks-large.svg";
 import emailIcon from "../../assets/images/icon-email.svg";
 import passwordIcon from "../../assets/images/icon-password.svg";
 import userIcon from "../../assets/images/icon-username.svg";
-import githubLogoIcon from "../../assets/images/icon-github-mark-white.svg";
-import googleLogoIcon from "../../assets/images/icon-google.svg";
+import { motion, useIsPresent } from "framer-motion";
 import Button from "../../Components/Button";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -19,6 +18,7 @@ const Signup = () => {
     const isAuthenticated = useAuth();
     useEffect(() => {
         if (isAuthenticated) {
+            setNavigatingTo("Home");
             navigate("/");
         }
     }, [isAuthenticated, navigate]);
@@ -27,6 +27,7 @@ const Signup = () => {
     const [userName, setUserName] = useState("");
     const [userNameError, setUserNameError] = useState(false);
     const [password, setPassword] = useState("");
+    const [navigatingTo, setNavigatingTo] = useState(null);
     const [passwordError, setPasswordError] = useState(false);
     const [repeatPassword, setRepeatPassword] = useState("");
     const [repeatError, setRepeatError] = useState(false);
@@ -76,12 +77,11 @@ const Signup = () => {
                     color: "var(--white-90-)",
                 },
             });
+            setNavigatingTo("Home");
             navigate(from, { replace: true });
-            console.log("res", res);
         } catch (error) {
             console.log(error);
             const message = error.response.data.message;
-            console.log(message);
             if (
                 message.includes("fails to match the required pattern") &&
                 message.includes("email")
@@ -168,7 +168,7 @@ const Signup = () => {
             setDisable(false);
         }
     };
-
+    const isPresent = useIsPresent();
     return (
         <div className="signup-container">
             <div className="auth-logo">
@@ -231,24 +231,13 @@ const Signup = () => {
                         handleClick={userSignUp}
                         buttonText="Signup"
                     />
-                    {/* <div className="continue-socials">
-                        <div className="line"></div>
-                        <h3>Or continue with</h3>
-                    </div>
-                    <div className="login-socials">
-                        <div className="login-with-google">
-                            <img src={googleLogoIcon} alt="Google Logo" />
-                            <h3>Google</h3>
-                        </div>
-                        <div className="login-with-github">
-                            <img src={githubLogoIcon} alt="Github Logo" />
-                            <h3>GitHub</h3>
-                        </div>
-                    </div> */}
                     <p>
                         Already have an account?{" "}
                         <span
-                            onClick={() => navigate("/login")}
+                            onClick={() => {
+                                navigate("/login");
+                                setNavigatingTo("Login");
+                            }}
                             className="create-account"
                         >
                             Login
@@ -256,6 +245,26 @@ const Signup = () => {
                     </p>
                 </div>
             </div>
+            <motion.div
+                initial={{ scaleX: 1 }}
+                animate={{
+                    scaleX: 0,
+                    transition: { duration: 0.6, ease: [0.83, 0, 0.17, 1] },
+                }}
+                exit={{
+                    scaleX: 1,
+                    transition: { duration: 0.6, ease: [0.83, 0, 0.17, 1] },
+                }}
+                style={{
+                    originX: isPresent ? 0 : 1,
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                }}
+                className="privacy-screen"
+            >
+                <h1 style={{ color: "white" }}>{navigatingTo || "Signup"}</h1>
+            </motion.div>
         </div>
     );
 };

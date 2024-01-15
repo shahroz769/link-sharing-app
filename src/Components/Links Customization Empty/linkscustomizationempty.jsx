@@ -1,5 +1,4 @@
 import emptyLinks from "../../assets/images/illustration-empty.svg";
-import Buttonsecondary from "../Button Secondary/buttonsecondary.jsx";
 
 const Linkscustomizationempty = () => {
     return (

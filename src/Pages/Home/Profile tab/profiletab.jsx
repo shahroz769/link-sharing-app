@@ -18,6 +18,7 @@ import useAuth from "../../../../hooks/useAuth.jsx";
 import PreviewFieldsSkeleton from "../../../Components/PreviewFieldsSkeleton/PreviewFieldsSkeleton.jsx";
 import { Skeleton } from "antd";
 import { useNavigate } from "react-router-dom";
+import { motion, useIsPresent } from "framer-motion";
 
 const VisuallyHiddenInput = styled("input")({
     clip: "rect(0 0 0 0)",
@@ -46,7 +47,7 @@ const Profiletab = () => {
     const [disable, setDisable] = useState(false);
     const [isImageUploading, setIsImageUploading] = useState(false);
     const isAuthenticated = useAuth();
-    const {setIsDataFetched } = useContext(userContext);
+    const { setIsDataFetched } = useContext(userContext);
 
     useEffect(() => {
         setUserImage(userData.profile);
@@ -75,7 +76,6 @@ const Profiletab = () => {
         if (isImageUploading) {
             return;
         }
-        console.log("UPLOAD");
         setIsImageUploading(true);
         const formData = new FormData();
         formData.append("file", file);
@@ -87,7 +87,6 @@ const Profiletab = () => {
                 },
             })
             .then((res) => {
-                console.log(res);
                 setUserImage(res.data.url);
                 setUserData({
                     ...userData,
@@ -132,7 +131,7 @@ const Profiletab = () => {
                     duration: 2000,
                     position: "bottom-center",
                 },
-            },
+            }
         );
     };
 
@@ -146,7 +145,6 @@ const Profiletab = () => {
         try {
             setDisable(true);
             if (!userData.firstName || !userData.lastName) {
-                console.error("Required filds must be provided");
                 return;
             }
             const res = await axiosPrivate.post("/profile/update-user", {
@@ -154,7 +152,6 @@ const Profiletab = () => {
                 lastName: userData.lastName,
                 displayEmail: userData.displayEmail,
             });
-            console.log(res);
             toast.success("Saved successfully!", {
                 duration: 2000,
                 position: "bottom-center",
@@ -177,7 +174,7 @@ const Profiletab = () => {
             setDisable(false);
         }
     };
-
+    const isPresent = useIsPresent();
     return (
         <>
             <div className="profile-details">
@@ -185,7 +182,7 @@ const Profiletab = () => {
                     <div className="profile-details-heading">
                         <h2>Profile Details</h2>
                         <IconButton
-                        className="logout-btn"
+                            className="logout-btn"
                             onMouseEnter={() => setIsLogoutHovered(true)}
                             onMouseLeave={() => setIsLogoutHovered(false)}
                             onClick={() => {
@@ -238,7 +235,7 @@ const Profiletab = () => {
                                         <img
                                             src={`${userImage.replace(
                                                 "/upload/",
-                                                `/upload/${transformations}`,
+                                                `/upload/${transformations}`
                                             )}`}
                                             alt="user"
                                         />
@@ -333,6 +330,26 @@ const Profiletab = () => {
                     />
                 </div>
             </div>
+            <motion.div
+                initial={{ scaleX: 1 }}
+                animate={{
+                    scaleX: 0,
+                    transition: { duration: 0.6, ease: [0.83, 0, 0.17, 1] },
+                }}
+                exit={{
+                    scaleX: 1,
+                    transition: { duration: 0.6, ease: [0.83, 0, 0.17, 1] },
+                }}
+                style={{
+                    originX: isPresent ? 0 : 1,
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                }}
+                className="privacy-screen"
+            >
+                <h1 style={{ color: "white" }}>"Profile Details"</h1>
+            </motion.div>
         </>
     );
 };

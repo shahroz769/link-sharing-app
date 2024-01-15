@@ -82,7 +82,6 @@ const InputField = ({
         if (!isValid) {
             setHaveError(true);
             setErrorMessage("Please check the URL");
-            console.log(`Invalid ${platform} link.`);
         } else {
             linksData[index] = {
                 ...linksData[index],
@@ -91,7 +90,6 @@ const InputField = ({
             setLinksData([...linksData]);
             setHaveError(false);
             setErrorMessage("");
-            console.log(`Valid ${platform} link: ${inputValue}`);
         }
     };
 

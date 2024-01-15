@@ -14,20 +14,15 @@ import userContext from "../../../context/userContext";
 import { axiosPrivate } from "../../api/axios";
 import { useMediaQuery } from "react-responsive";
 
-const Nav = () => {
+const Nav = ({ navigateTo }) => {
     const [isScrolled, setIsScrolled] = useState(false);
 
     useEffect(() => {
         const handleScroll = () => {
-            // Check if the scroll position is greater than 0
             const scrolled = window.scrollY > 0;
             setIsScrolled(scrolled);
         };
-
-        // Add scroll event listener
         window.addEventListener("scroll", handleScroll);
-
-        // Cleanup the event listener on component unmount
         return () => {
             window.removeEventListener("scroll", handleScroll);
         };
@@ -43,6 +38,11 @@ const Nav = () => {
     const isProfileRoute = location.pathname === "/profile";
     const isHomeRoute = location.pathname === "/";
     const navigationHandler = (page) => {
+        if (page == "/") {
+            navigateTo("Links");
+        } else if (page == "/profile") {
+            navigateTo("Profile Details");
+        }
         navigate(page);
     };
 
@@ -50,7 +50,6 @@ const Nav = () => {
         const linksPromise = axiosPrivate
             .post("/link/save", linksData)
             .then((res) => {
-                console.log(res);
                 return res.data;
             })
             .catch((err) => {
@@ -65,7 +64,6 @@ const Nav = () => {
                 displayEmail: userData.displayEmail,
             })
             .then((res) => {
-                console.log(res);
                 return res.data;
             })
             .catch((err) => {
@@ -74,11 +72,10 @@ const Nav = () => {
             });
         const a = Promise.all([linksPromise, detailsPromise])
             .then((results) => {
-                console.log("Both promises resolved:", results);
+                navigateTo("Preview");
                 navigate("/preview");
             })
             .catch((errors) => {
-                console.error("At least one promise rejected:", errors);
                 return Promise.reject(errors);
             });
         toast.promise(
@@ -104,7 +101,7 @@ const Nav = () => {
                     duration: 2000,
                     position: "bottom-center",
                 },
-            },
+            }
         );
     };
 

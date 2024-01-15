@@ -7,7 +7,6 @@ import { useState } from "react";
 
 const Linkscustomizationnotempty = () => {
     const [selectedPlatform, setSelectedPlatform] = useState(null);
-    console.log(selectedPlatform);
 
     const handlePlatformChange = (newPlatform) => {
         setSelectedPlatform(newPlatform);

@@ -1,6 +1,5 @@
 import "./home.css";
 import { useContext, useState, useEffect } from "react";
-import { Link } from "react-router-dom";
 import Nav from "../../Components/Nav/nav.jsx";
 import linkContext from "../../../context/linkContext.jsx";
 import MouseScroll from "../../assets/images/icon-mouse-scroll.svg";
@@ -38,6 +37,7 @@ import tumblrIcon from "../../assets/images/icon-tumblr-white.svg";
 import fiverrIcon from "../../assets/images/icon-fiverr-white.svg";
 import upworkIcon from "../../assets/images/icon-upwork-white.svg";
 import mediumIcon from "../../assets/images/icon-medium-white.svg";
+import { motion, useIsPresent } from "framer-motion";
 const transformations =
     "f_webp,ar_1:1,c_fill,g_face,r_max,w_300,h_300/c_pad/co_rgb:633CFF,e_outline:outer:14:0/";
 
@@ -47,6 +47,10 @@ const Home = ({ children }) => {
         useContext(linkContext);
 
     const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+    const [navigatingTo, setNavigatingTo] = useState(null);
+    const handleNavigatingTo = (pageName) => {
+        setNavigatingTo(pageName);
+    };
     useEffect(() => {
         const handleResize = () => {
             setWindowWidth(window.innerWidth);
@@ -58,9 +62,10 @@ const Home = ({ children }) => {
             window.removeEventListener("resize", handleResize);
         };
     }, []);
+    const isPresent = useIsPresent();
     return (
         <div className="home-wrapper">
-            <Nav />
+            <Nav navigateTo={handleNavigatingTo} />
             <div className="home-main">
                 {windowWidth > 850 && (
                     <div className="mockup-container">
@@ -75,7 +80,7 @@ const Home = ({ children }) => {
                                                 <img
                                                     src={`${userData?.profile.replace(
                                                         "/upload/",
-                                                        `/upload/${transformations}`,
+                                                        `/upload/${transformations}`
                                                     )}`}
                                                     alt="profile"
                                                 />
@@ -113,7 +118,7 @@ const Home = ({ children }) => {
                                     <div className="mockup-links-parent">
                                         {linksData?.length > 0 &&
                                         linksData.some(
-                                            (link) => link.link !== "",
+                                            (link) => link.link !== ""
                                         )
                                             ? linksData.map(
                                                   (link, ind) =>
@@ -123,7 +128,7 @@ const Home = ({ children }) => {
                                                               className="mockup-link-redirect"
                                                               href={
                                                                   link.link.startsWith(
-                                                                      "http",
+                                                                      "http"
                                                                   )
                                                                       ? link.link
                                                                       : `https://${link.link}`
@@ -241,7 +246,7 @@ const Home = ({ children }) => {
                                                                   </div>
                                                               </div>
                                                           </a>
-                                                      ),
+                                                      )
                                               )
                                             : [0, 1, 2, 3, 4].map(
                                                   (map, index) => (
@@ -254,12 +259,12 @@ const Home = ({ children }) => {
                                                               borderRadius: 8,
                                                           }}
                                                       />
-                                                  ),
+                                                  )
                                               )}
                                     </div>
                                     {linksData.length > 5 &&
                                         linksData.every(
-                                            (link) => link.link !== "",
+                                            (link) => link.link !== ""
                                         ) && (
                                             <div className="scroll-indicator">
                                                 <img
@@ -275,6 +280,26 @@ const Home = ({ children }) => {
                 )}
                 <div className="links-customization-parent">{children}</div>
             </div>
+            <motion.div
+                initial={{ scaleX: 1 }}
+                animate={{
+                    scaleX: 0,
+                    transition: { duration: 0.6, ease: [0.83, 0, 0.17, 1] },
+                }}
+                exit={{
+                    scaleX: 1,
+                    transition: { duration: 0.6, ease: [0.83, 0, 0.17, 1] },
+                }}
+                style={{
+                    originX: isPresent ? 0 : 1,
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                }}
+                className="privacy-screen"
+            >
+                <h1 style={{ color: "white" }}>{navigatingTo}</h1>
+            </motion.div>
         </div>
     );
 };
