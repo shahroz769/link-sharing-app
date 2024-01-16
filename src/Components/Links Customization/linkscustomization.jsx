@@ -17,11 +17,19 @@ const Linkscustomization = ({ order, index, link, onRemove }) => {
         transition,
         isDragging,
     } = useSortable({ id: link.order, handle: true });
-    const style = {
-        transition,
-        transform: CSS.Transform.toString(transform),
-        border: isDragging ? "1px solid var(--purple-60-)" : "none",
-    };
+    const style = isDragging
+        ? {
+              transition,
+              transform: CSS.Transform.toString(transform),
+              zIndex: 1000,
+              border: "1px solid var(--purple-60-)",
+          }
+        : {
+              transition,
+              transform: CSS.Transform.toString(transform),
+              border: "none",
+          };
+
     const { linksData, updateLinksData, setLinksData } =
         useContext(linkContext);
 

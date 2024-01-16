@@ -29,17 +29,17 @@ export const UserProvider = ({ children }) => {
                     if (!isDataFetched) {
                         const res = await axiosPrivate("/profile");
                         setUserData(res.data.user);
-                        setIsLoading(false);
                         setIsDataFetched(true);
                     }
                 } catch (error) {
-                    setIsLoading(false);
                     const errorMessage = error.response.data.message;
                     console.error(error);
                     if (errorMessage == "jwt malformed") {
                         Cookies.remove("jwt");
                         navigate("/");
                     }
+                } finally {
+                    setIsLoading(false);
                 }
             })();
         }

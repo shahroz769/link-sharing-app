@@ -1,8 +1,6 @@
 import "./nav.css";
 import logoLarge from "../../assets/images/logo-devlinks-large.svg";
 import logoSmall from "../../assets/images/logo-devlinks-small.svg";
-import linkIcon from "../../assets/images/icon-link.svg";
-import profilIcon from "../../assets/images/icon-profile-details-header.svg";
 import linkContext from "../../../context/linkContext";
 import Tabs from "../Tabs/tabs";
 import Buttonsecondary from "../Button Secondary/buttonsecondary";
@@ -102,7 +100,7 @@ const Nav = ({ navigateTo }) => {
                     duration: 2000,
                     position: "bottom-center",
                 },
-            },
+            }
         );
     };
 
@@ -131,7 +129,6 @@ const Nav = ({ navigateTo }) => {
                     color: "var(--white-90-)",
                 },
             };
-            // Display the appropriate toast based on the missing data
             if (!linksData.some((link) => link.link !== "")) {
                 toast.error("Add links to preview", toastConfig);
             } else {
@@ -154,8 +151,7 @@ const Nav = ({ navigateTo }) => {
                     <Tabs
                         clickHandler={navigationHandler}
                         clickProp="/"
-                        imgSrc={linkIcon}
-                        FD
+                        img={"link"}
                         altText="Link"
                         tabText="Links"
                         active={isHomeRoute}
@@ -164,7 +160,7 @@ const Nav = ({ navigateTo }) => {
                     <Tabs
                         clickHandler={navigationHandler}
                         clickProp="/profile"
-                        imgSrc={profilIcon}
+                        img={"profile"}
                         altText="Profile"
                         tabText="Profile Details"
                         active={isProfileRoute}

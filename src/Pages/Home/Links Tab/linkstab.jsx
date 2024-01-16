@@ -22,7 +22,6 @@ import {
     SortableContext,
     verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
-const saveLinksEndpoint = "/link/save";
 
 const linkPatterns = {
     GitHub: /^((https?:\/\/)?(www\.)?github\.com\/\S+)\/?$/i,
@@ -94,7 +93,6 @@ const Linkstab = () => {
 
     const handleAddLinkClick = () => {
         updateLinksData(order);
-        // setOrder(1);
         setLinksData((prev) =>
             prev.map((link, index) => ({
                 ...link,
@@ -134,7 +132,7 @@ const Linkstab = () => {
                 return;
             }
 
-            const res = await axiosPrivate.post(saveLinksEndpoint, linksData);
+            const res = await axiosPrivate.post("/link/save", linksData);
             toast.success("Updated successfully!", {
                 duration: 2000,
                 position: "bottom-center",

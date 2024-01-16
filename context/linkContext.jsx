@@ -37,11 +37,10 @@ export const LinkProvider = ({ children }) => {
                 return;
             }
         };
-        console.log(location);
         if (location.pathname !== "/login" && location.pathname !== "/signup") {
             !isLinkFetched && getLinksData();
         }
-    }, []);
+    }, [location.pathname]);
 
     return (
         <linkContext.Provider

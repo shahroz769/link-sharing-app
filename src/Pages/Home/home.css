@@ -97,10 +97,10 @@
     position: relative;
     width: 308px;
     height: 632px;
-    background-image: url(https://res.cloudinary.com/dke5jqhus/image/upload/f_webp/v1702298868/dev_links/mockup-border_vmrdd7.png);
+    /* background-image: url(https://res.cloudinary.com/dke5jqhus/image/upload/f_webp/v1702298868/dev_links/mockup-border_vmrdd7.png);
     background-repeat: no-repeat;
     background-position: center;
-    background-size: 100%;
+    background-size: 100%; */
     position: fixed;
 }
 
