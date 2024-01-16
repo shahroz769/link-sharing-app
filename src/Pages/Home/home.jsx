@@ -73,7 +73,6 @@ const Home = ({ children }) => {
                     <div className="mockup-container">
                         <div className="mockup">
                             <img
-                                fetchpriority="high"
                                 style={{
                                     position: "absolute",
                                     width: "100%",
