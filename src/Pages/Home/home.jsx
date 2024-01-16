@@ -73,6 +73,7 @@ const Home = ({ children }) => {
                     <div className="mockup-container">
                         <div className="mockup">
                             <img
+                                fetchpriority="high"
                                 style={{
                                     position: "absolute",
                                     width: "100%",
@@ -91,7 +92,7 @@ const Home = ({ children }) => {
                                                 <img
                                                     src={`${userData?.profile.replace(
                                                         "/upload/",
-                                                        `/upload/${transformations}`
+                                                        `/upload/${transformations}`,
                                                     )}`}
                                                     alt="profile"
                                                 />
@@ -129,7 +130,7 @@ const Home = ({ children }) => {
                                     <div className="mockup-links-parent">
                                         {linksData?.length > 0 &&
                                         linksData.some(
-                                            (link) => link.link !== ""
+                                            (link) => link.link !== "",
                                         )
                                             ? linksData.map(
                                                   (link, ind) =>
@@ -139,7 +140,7 @@ const Home = ({ children }) => {
                                                               className="mockup-link-redirect"
                                                               href={
                                                                   link.link.startsWith(
-                                                                      "http"
+                                                                      "http",
                                                                   )
                                                                       ? link.link
                                                                       : `https://${link.link}`
@@ -257,7 +258,7 @@ const Home = ({ children }) => {
                                                                   </div>
                                                               </div>
                                                           </a>
-                                                      )
+                                                      ),
                                               )
                                             : [0, 1, 2, 3, 4].map(
                                                   (map, index) => (
@@ -270,12 +271,12 @@ const Home = ({ children }) => {
                                                               borderRadius: 8,
                                                           }}
                                                       />
-                                                  )
+                                                  ),
                                               )}
                                     </div>
                                     {linksData.length > 5 &&
                                         linksData.every(
-                                            (link) => link.link !== ""
+                                            (link) => link.link !== "",
                                         ) && (
                                             <div className="scroll-indicator">
                                                 <img
