@@ -7,6 +7,7 @@ import rightArrowIcon from "../../assets/images/icon-arrow-right.svg";
 import rightArrowIconBlack from "../../assets/images/icon-arrow-right-black.svg";
 import userContext from "../../../context/userContext.jsx";
 import { Skeleton } from "antd";
+import { useLocation } from "react-router-dom";
 import MockupHeadSkeleton from "../../Components/MockupHeadSkeleton/MockupHeadSkeleton.jsx";
 import githubIcon from "../../assets/images/icon-github-white.svg";
 import twitterIcon from "../../assets/images/icon-twitter-white.svg";
@@ -42,6 +43,7 @@ const transformations =
     "f_webp,ar_1:1,c_fill,g_face,r_max,w_300,h_300/c_pad/co_rgb:633CFF,e_outline:outer:14:0/";
 
 const Home = ({ children }) => {
+    const location = useLocation();
     const { userData, setUserData, isLoading } = useContext(userContext);
     const { linksData, updateLinksData, setLinksData } =
         useContext(linkContext);
@@ -80,7 +82,7 @@ const Home = ({ children }) => {
                                                 <img
                                                     src={`${userData?.profile.replace(
                                                         "/upload/",
-                                                        `/upload/${transformations}`
+                                                        `/upload/${transformations}`,
                                                     )}`}
                                                     alt="profile"
                                                 />
@@ -118,7 +120,7 @@ const Home = ({ children }) => {
                                     <div className="mockup-links-parent">
                                         {linksData?.length > 0 &&
                                         linksData.some(
-                                            (link) => link.link !== ""
+                                            (link) => link.link !== "",
                                         )
                                             ? linksData.map(
                                                   (link, ind) =>
@@ -128,7 +130,7 @@ const Home = ({ children }) => {
                                                               className="mockup-link-redirect"
                                                               href={
                                                                   link.link.startsWith(
-                                                                      "http"
+                                                                      "http",
                                                                   )
                                                                       ? link.link
                                                                       : `https://${link.link}`
@@ -246,7 +248,7 @@ const Home = ({ children }) => {
                                                                   </div>
                                                               </div>
                                                           </a>
-                                                      )
+                                                      ),
                                               )
                                             : [0, 1, 2, 3, 4].map(
                                                   (map, index) => (
@@ -259,12 +261,12 @@ const Home = ({ children }) => {
                                                               borderRadius: 8,
                                                           }}
                                                       />
-                                                  )
+                                                  ),
                                               )}
                                     </div>
                                     {linksData.length > 5 &&
                                         linksData.every(
-                                            (link) => link.link !== ""
+                                            (link) => link.link !== "",
                                         ) && (
                                             <div className="scroll-indicator">
                                                 <img
@@ -298,7 +300,9 @@ const Home = ({ children }) => {
                 }}
                 className="privacy-screen"
             >
-                <h1 style={{ color: "white" }}>{navigatingTo}</h1>
+                <h1 style={{ color: "white" }}>
+                    {navigatingTo || location?.state?.navigateTo || "Home"}
+                </h1>
             </motion.div>
         </div>
     );

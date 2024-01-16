@@ -67,33 +67,11 @@ const Linkstab = () => {
             navigate("/login");
         }
     }, [isAuthenticated, navigate]);
-    const [isLoading, setIsLoading] = useState(true);
     const [disable, setDisable] = useState(false);
 
-    const { linksData, updateLinksData, setLinksData } =
+    const { linksData, updateLinksData, setLinksData, isLinkLoading } =
         useContext(linkContext);
     const [order, setOrder] = useState(1);
-
-    useEffect(() => {
-        (async () => {
-            if (!isAuthenticated) {
-                navigate("/login");
-                return;
-            }
-            try {
-                if (linksData.length === 0) {
-                    const res = await axiosPrivate("/link");
-                    res?.data?.links && setLinksData(res.data.links);
-                }
-                setIsLoading(false);
-                return;
-            } catch (error) {
-                console.error(error);
-                setIsLoading(false);
-                return;
-            }
-        })();
-    }, []);
 
     const onDragEnd = (event) => {
         const { active, over } = event;
@@ -102,7 +80,7 @@ const Linkstab = () => {
         }
         setLinksData((links) => {
             const oldIndex = links.findIndex(
-                (link) => link.order === active.id
+                (link) => link.order === active.id,
             );
             const newIndex = links.findIndex((link) => link.order === over.id);
             const newLinks = arrayMove(links, oldIndex, newIndex);
@@ -121,7 +99,7 @@ const Linkstab = () => {
             prev.map((link, index) => ({
                 ...link,
                 order: index + 1,
-            }))
+            })),
         );
     };
     const handleRemoveLink = (index) => {
@@ -214,7 +192,7 @@ const Linkstab = () => {
                             }
                             strategy={verticalListSortingStrategy}
                         >
-                            {isLoading ? (
+                            {isLinkLoading ? (
                                 <>
                                     <LinkInputSkeleton />
                                     <LinkInputSkeleton />
@@ -226,7 +204,7 @@ const Linkstab = () => {
                                         link={link || ""}
                                         order={link.order}
                                         index={ind}
-                                        loading={isLoading}
+                                        loading={isLinkLoading}
                                         platform={link.platform.text || ""}
                                         onRemove={handleRemoveLink}
                                     />

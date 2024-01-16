@@ -7,7 +7,7 @@ import passwordIcon from "../../assets/images/icon-password.svg";
 import userIcon from "../../assets/images/icon-username.svg";
 import { motion, useIsPresent } from "framer-motion";
 import Button from "../../Components/Button";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
 import toast from "react-hot-toast";
 import useAuth from "../../../hooks/useAuth";
@@ -16,10 +16,11 @@ import Cookies from "js-cookie";
 const Signup = () => {
     const navigate = useNavigate();
     const isAuthenticated = useAuth();
+    const location = useLocation();
     useEffect(() => {
         if (isAuthenticated) {
             setNavigatingTo("Home");
-            navigate("/");
+            navigate("/", { state: { navigateTo: "Home" } });
         }
     }, [isAuthenticated, navigate]);
     const [email, setEmail] = useState("");
@@ -32,7 +33,6 @@ const Signup = () => {
     const [repeatPassword, setRepeatPassword] = useState("");
     const [repeatError, setRepeatError] = useState(false);
     const [disable, setDisable] = useState(false);
-    const from = location.state?.from?.pathname || "/";
 
     const handleEnterKeyPress = (event) => {
         if (event.key === "Enter") {
@@ -78,7 +78,7 @@ const Signup = () => {
                 },
             });
             setNavigatingTo("Home");
-            navigate(from, { replace: true });
+            navigate("/", { state: { navigateTo: "Home" } });
         } catch (error) {
             console.log(error);
             const message = error.response.data.message;
@@ -207,7 +207,7 @@ const Signup = () => {
                         type="password"
                         iconSrc={passwordIcon}
                         altText="Password"
-                        placeholderText="At least 8 characters"
+                        placeholderText="At least 6 characters"
                         onInputChange={(passVal) => setPassword(passVal)}
                         onKeyPress={handleEnterKeyPress}
                     />
@@ -218,7 +218,7 @@ const Signup = () => {
                         type="password"
                         iconSrc={passwordIcon}
                         altText="Confirm Password"
-                        placeholderText="At least 8 characters"
+                        placeholderText="At least 6 characters"
                         onInputChange={(repPassVal) =>
                             setRepeatPassword(repPassVal)
                         }
@@ -235,7 +235,9 @@ const Signup = () => {
                         Already have an account?{" "}
                         <span
                             onClick={() => {
-                                navigate("/login");
+                                navigate("/login", {
+                                    state: { navigateTo: "Login" },
+                                });
                                 setNavigatingTo("Login");
                             }}
                             className="create-account"
@@ -263,7 +265,9 @@ const Signup = () => {
                 }}
                 className="privacy-screen"
             >
-                <h1 style={{ color: "white" }}>{navigatingTo || "Signup"}</h1>
+                <h1 style={{ color: "white" }}>
+                    {navigatingTo || location?.state?.navigateTo || "Signup"}
+                </h1>
             </motion.div>
         </div>
     );

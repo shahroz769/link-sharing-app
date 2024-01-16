@@ -133,3 +133,13 @@ input::placeholder {
     background-color: #806ada;
     z-index: 9999;
 }
+
+.css-3yi6zv:hover,
+.css-iut109-MuiButtonBase-root-MuiButton-root:hover {
+    background-color: var(--purple-30-) !important;
+}
+
+.css-3yi6zv,
+.css-iut109-MuiButtonBase-root-MuiButton-root {
+    background-color: var(--purple-30-) !important;
+}

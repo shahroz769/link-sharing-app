@@ -19,11 +19,10 @@ const Login = () => {
     useEffect(() => {
         if (isAuthenticated) {
             setNavigatingTo("Home");
-            navigate("/");
+            navigate("/", { state: { navigateTo: "Home" } });
         }
     }, [isAuthenticated, navigate]);
     const location = useLocation();
-    const from = location.state?.from?.pathname || "/";
     const [navigatingTo, setNavigatingTo] = useState(null);
     const [email, setEmail] = useState("");
     const [emailError, setEmailError] = useState(false);
@@ -58,7 +57,7 @@ const Login = () => {
             setEmail("");
             setPassword("");
             setNavigatingTo("Home");
-            navigate(from, { replace: true });
+            navigate("/", { state: { navigateTo: "Home" } });
         } catch (err) {
             console.log(err);
             if (!err?.response) {
@@ -130,7 +129,9 @@ const Login = () => {
                         Don’t have an account?{" "}
                         <span
                             onClick={() => {
-                                navigate("/signup");
+                                navigate("/signup", {
+                                    state: { navigateTo: "Signup" },
+                                });
                                 setNavigatingTo("Signup");
                             }}
                             className="create-account"
@@ -158,7 +159,9 @@ const Login = () => {
                 }}
                 className="privacy-screen"
             >
-                <h1 style={{ color: "white" }}>{navigatingTo || "Login"}</h1>
+                <h1 style={{ color: "white" }}>
+                    {navigatingTo || location?.state?.navigateTo || "Login"}
+                </h1>
             </motion.div>
         </div>
     );

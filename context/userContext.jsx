@@ -22,13 +22,12 @@ export const UserProvider = ({ children }) => {
         ) {
             (async () => {
                 try {
-                    if (!isAuthenticated) {
+                    if (!isAuthenticated && location.pathname !== "/signup") {
                         navigate("/login");
                         return;
                     }
                     if (!isDataFetched) {
                         const res = await axiosPrivate("/profile");
-                        console.log(res.data.user);
                         setUserData(res.data.user);
                         setIsLoading(false);
                         setIsDataFetched(true);

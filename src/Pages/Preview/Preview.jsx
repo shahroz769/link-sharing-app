@@ -6,7 +6,7 @@ import RightArrow from "../../assets/images/icon-arrow-right.svg";
 import RightArrowBlack from "../../assets/images/icon-arrow-right-black.svg";
 import userContext from "../../../context/userContext";
 import { axiosPrivate } from "../../api/axios";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import useAuth from "../../../hooks/useAuth";
 import toast from "react-hot-toast";
 import PreviewHeaderSkeleton from "../../Components/Skeleton/PreviewHeaderSkeleton/PreviewHeaderSkeleton";
@@ -41,12 +41,13 @@ import tumblrIcon from "../../assets/images/icon-tumblr-white.svg";
 import fiverrIcon from "../../assets/images/icon-fiverr-white.svg";
 import upworkIcon from "../../assets/images/icon-upwork-white.svg";
 import mediumIcon from "../../assets/images/icon-medium-white.svg";
-import { motion, useIsPresent, AnimatePresence } from "framer-motion";
+import { motion, useIsPresent } from "framer-motion";
 
 const transformations =
     "f_webp,ar_1:1,c_fill,g_face,r_max,w_300,h_300/c_pad/co_rgb:633CFF,e_outline:outer:14:0/";
 
 const Preview = () => {
+    const location = useLocation();
     const isAuthenticated = useAuth();
     const navigate = useNavigate();
     useEffect(() => {
@@ -79,7 +80,7 @@ const Preview = () => {
 
     const handleCopy = () => {
         navigator.clipboard.writeText(
-            import.meta.env.VITE_FE_URL + "/" + userData.userName
+            import.meta.env.VITE_FE_URL + "/" + userData.userName,
         );
         toast.success("The link has been copied to your clipboard!", {
             duration: 2000,
@@ -99,7 +100,7 @@ const Preview = () => {
                 <Buttonsecondary
                     onClick={() => {
                         setNavigatingTo("Home");
-                        navigate("/");
+                        navigate("/", { state: { navigateTo: "Home" } });
                     }}
                     buttonSecondaryText="Back to Editor"
                 />
@@ -151,7 +152,7 @@ const Preview = () => {
                                 <img
                                     src={`${userData?.profile.replace(
                                         "/upload/",
-                                        `/upload/${transformations}`
+                                        `/upload/${transformations}`,
                                     )}`}
                                     alt="profile"
                                 />
@@ -185,134 +186,101 @@ const Preview = () => {
                                   }
                         }
                     >
-                        <AnimatePresence mode="wait">
-                            {linksLoading
-                                ? [0, 1, 2, 3, 4].map((map, index) => (
-                                      <Skeleton.Button
-                                          active={isLoading}
-                                          key={index}
+                        {linksLoading
+                            ? [0, 1, 2, 3, 4].map((map, index) => (
+                                  <Skeleton.Button
+                                      active={isLoading}
+                                      key={index}
+                                      style={{
+                                          width: 281,
+                                          height: 56,
+                                          borderRadius: 8,
+                                      }}
+                                  />
+                              ))
+                            : linksData.map((link, ind) => (
+                                  <a
+                                      key={ind}
+                                      href={
+                                          link.link.startsWith("http")
+                                              ? link.link
+                                              : `https://${link.link}`
+                                      }
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                      className="preview-card-link"
+                                      style={{
+                                          backgroundColor:
+                                              link.platform.backgroundColor,
+                                          cursor: "pointer",
+                                          textDecoration: "none",
+                                      }}
+                                  >
+                                      <div>
+                                          <img
+                                              src={(() => {
+                                                  const platformText =
+                                                      linksData[ind]?.platform
+                                                          ?.text;
+                                                  const platformIcon = {
+                                                      GitHub: githubIcon,
+                                                      Twitter: twitterIcon,
+                                                      LinkedIn: linkedInIcon,
+                                                      YouTube: youtubeIcon,
+                                                      Facebook: facebookIcon,
+                                                      Twitch: twitchIcon,
+                                                      DevTo: devToIcon,
+                                                      CodeWars: codeWarsIcon,
+                                                      CodePen: codePenIcon,
+                                                      FreeCodeCamp:
+                                                          freeCodeCampIcon,
+                                                      GitLab: gitLabIcon,
+                                                      Hashnode: hashNodeIcon,
+                                                      StackOverflow:
+                                                          stackOverFlowIcon,
+                                                      FrontendMentor:
+                                                          frontendMentorIcon,
+                                                      WhatsApp: whatsappIcon,
+                                                      XDA: xdaIcon,
+                                                      Instagram: instagramIcon,
+                                                      Discord: discordIcon,
+                                                      Telegram: telegramIcon,
+                                                      Threads: threadsIcon,
+                                                      Website: websiteIcon,
+                                                      Reddit: redditIcon,
+                                                      Quora: quoraIcon,
+                                                      TikTok: tiktokIcon,
+                                                      Snapchat: snapchatIcon,
+                                                      Tumblr: tumblrIcon,
+                                                      Fiverr: fiverrIcon,
+                                                      Upwork: upworkIcon,
+                                                      Medium: mediumIcon,
+                                                  }[platformText];
+                                                  return platformIcon || null;
+                                              })()}
+                                              alt={link.platform.text}
+                                          />
+                                      </div>
+                                      <p
                                           style={{
-                                              width: 281,
-                                              height: 56,
-                                              borderRadius: 8,
-                                          }}
-                                      />
-                                  ))
-                                : linksData.map((link, ind) => (
-                                      <motion.div
-                                          key={ind}
-                                          initial={{ opacity: 0, y: -25 }}
-                                          animate={{ opacity: 1, y: 0 }}
-                                          transition={{
-                                              duration: 0.25,
-                                              delay: ind * 0.05,
-                                              ease: [0.83, 0, 0.17, 1],
+                                              color: link.platform.color,
                                           }}
                                       >
-                                          <a
-                                              key={ind}
-                                              href={
-                                                  link.link.startsWith("http")
-                                                      ? link.link
-                                                      : `https://${link.link}`
+                                          {link.platform.text}
+                                      </p>
+                                      <div>
+                                          <img
+                                              src={
+                                                  link.platform.color ==
+                                                  "#000000"
+                                                      ? RightArrowBlack
+                                                      : RightArrow
                                               }
-                                              target="_blank"
-                                              rel="noopener noreferrer"
-                                              className="preview-card-link"
-                                              style={{
-                                                  backgroundColor:
-                                                      link.platform
-                                                          .backgroundColor,
-                                                  cursor: "pointer",
-                                                  textDecoration: "none",
-                                              }}
-                                          >
-                                              <div>
-                                                  <img
-                                                      src={(() => {
-                                                          const platformText =
-                                                              linksData[ind]
-                                                                  ?.platform
-                                                                  ?.text;
-                                                          const platformIcon = {
-                                                              GitHub: githubIcon,
-                                                              Twitter:
-                                                                  twitterIcon,
-                                                              LinkedIn:
-                                                                  linkedInIcon,
-                                                              YouTube:
-                                                                  youtubeIcon,
-                                                              Facebook:
-                                                                  facebookIcon,
-                                                              Twitch: twitchIcon,
-                                                              DevTo: devToIcon,
-                                                              CodeWars:
-                                                                  codeWarsIcon,
-                                                              CodePen:
-                                                                  codePenIcon,
-                                                              FreeCodeCamp:
-                                                                  freeCodeCampIcon,
-                                                              GitLab: gitLabIcon,
-                                                              Hashnode:
-                                                                  hashNodeIcon,
-                                                              StackOverflow:
-                                                                  stackOverFlowIcon,
-                                                              FrontendMentor:
-                                                                  frontendMentorIcon,
-                                                              WhatsApp:
-                                                                  whatsappIcon,
-                                                              XDA: xdaIcon,
-                                                              Instagram:
-                                                                  instagramIcon,
-                                                              Discord:
-                                                                  discordIcon,
-                                                              Telegram:
-                                                                  telegramIcon,
-                                                              Threads:
-                                                                  threadsIcon,
-                                                              Website:
-                                                                  websiteIcon,
-                                                              Reddit: redditIcon,
-                                                              Quora: quoraIcon,
-                                                              TikTok: tiktokIcon,
-                                                              Snapchat:
-                                                                  snapchatIcon,
-                                                              Tumblr: tumblrIcon,
-                                                              Fiverr: fiverrIcon,
-                                                              Upwork: upworkIcon,
-                                                              Medium: mediumIcon,
-                                                          }[platformText];
-                                                          return (
-                                                              platformIcon ||
-                                                              null
-                                                          );
-                                                      })()}
-                                                      alt={link.platform.text}
-                                                  />
-                                              </div>
-                                              <p
-                                                  style={{
-                                                      color: link.platform
-                                                          .color,
-                                                  }}
-                                              >
-                                                  {link.platform.text}
-                                              </p>
-                                              <div>
-                                                  <img
-                                                      src={
-                                                          link.platform.color ==
-                                                          "#000000"
-                                                              ? RightArrowBlack
-                                                              : RightArrow
-                                                      }
-                                                      alt="Arrow"
-                                                  />
-                                              </div>
-                                          </a>
-                                      </motion.div>
-                                  ))}
-                        </AnimatePresence>
+                                              alt="Arrow"
+                                          />
+                                      </div>
+                                  </a>
+                              ))}
                     </div>
                 </div>
             )}
@@ -334,7 +302,9 @@ const Preview = () => {
                 }}
                 className="privacy-screen"
             >
-                <h1 style={{ color: "white" }}>{navigatingTo}</h1>
+                <h1 style={{ color: "white" }}>
+                    {navigatingTo || location?.state?.navigateTo || "Preview"}
+                </h1>
             </motion.div>
         </div>
     );

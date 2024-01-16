@@ -50,27 +50,27 @@ const Profiletab = () => {
     const { setIsDataFetched } = useContext(userContext);
 
     useEffect(() => {
-        setUserImage(userData.profile);
+        setUserImage(userData?.profile);
     }, [userData]);
 
-    useEffect(() => {
-        (async () => {
-            if (!isAuthenticated) {
-                navigate("/login");
-                return;
-            }
-            try {
-                if (!linksData[0]?.link) {
-                    const resLinks = await axiosPrivate(getLinksEndpoint);
-                    resLinks?.data?.links && setLinksData(resLinks.data.links);
-                }
-                return;
-            } catch (error) {
-                console.error(error.message);
-                return;
-            }
-        })();
-    }, []);
+    // useEffect(() => {
+    //     (async () => {
+    //         if (!isAuthenticated) {
+    //             navigate("/login");
+    //             return;
+    //         }
+    //         try {
+    //             if (!linksData[0]?.link) {
+    //                 const resLinks = await axiosPrivate(getLinksEndpoint);
+    //                 resLinks?.data?.links && setLinksData(resLinks.data.links);
+    //             }
+    //             return;
+    //         } catch (error) {
+    //             console.error(error.message);
+    //             return;
+    //         }
+    //     })();
+    // }, []);
 
     const handleImage = (file) => {
         if (isImageUploading) {
@@ -131,7 +131,7 @@ const Profiletab = () => {
                     duration: 2000,
                     position: "bottom-center",
                 },
-            }
+            },
         );
     };
 
@@ -235,7 +235,7 @@ const Profiletab = () => {
                                         <img
                                             src={`${userImage.replace(
                                                 "/upload/",
-                                                `/upload/${transformations}`
+                                                `/upload/${transformations}`,
                                             )}`}
                                             alt="user"
                                         />
@@ -274,7 +274,7 @@ const Profiletab = () => {
                             <div className="profile-first-name">
                                 <p>First name*</p>
                                 <InputField
-                                    value={userData.firstName || ""}
+                                    value={userData?.firstName || ""}
                                     onInputChange={(val) =>
                                         setUserData({
                                             ...userData,
@@ -289,7 +289,7 @@ const Profiletab = () => {
                             <div className="profile-last-name">
                                 <p>Last name*</p>
                                 <InputField
-                                    value={userData.lastName || ""}
+                                    value={userData?.lastName || ""}
                                     onInputChange={(val) =>
                                         setUserData({
                                             ...userData,
@@ -304,7 +304,7 @@ const Profiletab = () => {
                             <div className="profile-email">
                                 <p>Email</p>
                                 <InputField
-                                    value={userData.displayEmail || ""}
+                                    value={userData?.displayEmail || ""}
                                     onInputChange={(val) =>
                                         setUserData({
                                             ...userData,
