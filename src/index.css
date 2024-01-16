@@ -55,7 +55,7 @@ p,
     color: var(--black-90-);
 }
 
-span {
+span:not(.MuiTouchRipple-root) {
     font-size: 12px;
     line-height: 150%;
     font-weight: 400;
@@ -153,4 +153,9 @@ input::placeholder {
 .css-3yi6zv,
 .css-iut109-MuiButtonBase-root-MuiButton-root {
     background-color: var(--purple-30-) !important;
+}
+
+.css-w0pj6f {
+    z-index: 9999 !important;
+    color: var(--purple-60-) !important;
 }

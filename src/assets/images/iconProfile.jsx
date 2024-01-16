@@ -2,8 +2,8 @@ const IconProfile = ({ color }) => {
     return (
         <svg
             xmlns="http://www.w3.org/2000/svg"
-            width={21}
-            height={20}
+            width={19.92}
+            height={19.92}
             fill="none"
             viewBox="0 0 21 20"
         >
