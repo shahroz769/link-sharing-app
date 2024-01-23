@@ -24,6 +24,8 @@
     gap: 24px;
 }
 
+
+
 @media (width <=440px) {
     .login-container {
         background-color: var(--white-90-);

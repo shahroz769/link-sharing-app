@@ -47,12 +47,16 @@ h3 {
     font-weight: 700;
 }
 
-p,
-.create-account {
+p {
     font-size: 16px;
     line-height: 150%;
     font-weight: 400;
     color: var(--black-90-);
+}
+
+.create-account {
+    font-size: 16px !important;
+    line-height: 150% !important;
 }
 
 span:not(.MuiTouchRipple-root) {
@@ -86,7 +90,7 @@ input::placeholder {
 }
 
 .create-account {
-    color: var(--purple-90-);
+    color: var(--purple-90-) !important;
     cursor: pointer;
 }
 
