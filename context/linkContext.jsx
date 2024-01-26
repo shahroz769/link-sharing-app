@@ -24,7 +24,6 @@ export const LinkProvider = ({ children }) => {
         const getLinksData = async () => {
             try {
                 if (!isAuthenticated) {
-                    navigate("/login");
                     return;
                 }
                 const res = await axiosPrivate("/link");

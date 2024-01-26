@@ -126,7 +126,7 @@ const Share = () => {
                                     <img
                                         src={`${userData?.profile.replace(
                                             "/upload/",
-                                            `/upload/${transformations}`
+                                            `/upload/${transformations}`,
                                         )}`}
                                         alt="profile"
                                     />
@@ -192,10 +192,10 @@ const Share = () => {
                                         >
                                             <div>
                                                 <img
+                                                    style={{ width: "16px" }}
                                                     src={(() => {
                                                         const platformText =
-                                                            linksData[ind]
-                                                                ?.platform
+                                                            link?.platform
                                                                 ?.text;
                                                         const platformIcon = {
                                                             GitHub: githubIcon,
@@ -244,6 +244,8 @@ const Share = () => {
                                                             Fiverr: fiverrIcon,
                                                             Upwork: upworkIcon,
                                                             Medium: mediumIcon,
+                                                            Portfolio:
+                                                                "https://res.cloudinary.com/dke5jqhus/image/upload/v1705847763/Portfolio/oklvsql2vlkze7p3ggmq.svg",
                                                         }[platformText];
                                                         return (
                                                             platformIcon || null

@@ -23,7 +23,6 @@ export const UserProvider = ({ children }) => {
             (async () => {
                 try {
                     if (!isAuthenticated && location.pathname !== "/signup") {
-                        navigate("/login");
                         return;
                     }
                     if (!isDataFetched) {
