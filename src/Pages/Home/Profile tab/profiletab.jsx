@@ -32,10 +32,8 @@ const VisuallyHiddenInput = styled("input")({
     width: 1,
 });
 
-const getLinksEndpoint = "/link";
-
 const transformations =
-    "f_webp,ar_1:1,c_fill,g_face,r_12,w_300,h_300/c_pad/co_rgb:000000,e_colorize:50/";
+    "f_avif,ar_1:1,c_fill,g_face,r_12,w_300,h_300/c_pad/co_rgb:000000,e_colorize:50/";
 
 const Profiletab = () => {
     const navigate = useNavigate();
@@ -52,25 +50,6 @@ const Profiletab = () => {
     useEffect(() => {
         setUserImage(userData?.profile);
     }, [userData]);
-
-    // useEffect(() => {
-    //     (async () => {
-    //         if (!isAuthenticated) {
-    //             navigate("/login");
-    //             return;
-    //         }
-    //         try {
-    //             if (!linksData[0]?.link) {
-    //                 const resLinks = await axiosPrivate(getLinksEndpoint);
-    //                 resLinks?.data?.links && setLinksData(resLinks.data.links);
-    //             }
-    //             return;
-    //         } catch (error) {
-    //             console.error(error.message);
-    //             return;
-    //         }
-    //     })();
-    // }, []);
 
     const handleImage = (file) => {
         if (isImageUploading) {

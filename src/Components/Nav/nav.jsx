@@ -105,7 +105,6 @@ const Nav = ({ navigateTo }) => {
     };
 
     const navigateToPreview = () => {
-        // Check for both link and profile conditions at once
         if (
             linksData.some((link) => link.link !== "") &&
             userData.profile &&
@@ -114,7 +113,6 @@ const Nav = ({ navigateTo }) => {
         ) {
             saveAllData();
         } else {
-            // Create a reusable toast configuration for efficiency
             const toastConfig = {
                 icon: (
                     <WarningTwoTone

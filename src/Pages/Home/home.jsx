@@ -40,7 +40,7 @@ import upworkIcon from "../../assets/images/icon-upwork-white.svg";
 import mediumIcon from "../../assets/images/icon-medium-white.svg";
 import { motion, useIsPresent } from "framer-motion";
 const transformations =
-    "f_webp,ar_1:1,c_fill,g_face,r_max,w_300,h_300/c_pad/co_rgb:633CFF,e_outline:outer:14:0/";
+    "f_avif,ar_1:1,c_fill,g_face,r_max,w_300,h_300/c_pad/co_rgb:633CFF,e_outline:outer:14:0/";
 
 const Home = ({ children }) => {
     const location = useLocation();
@@ -79,7 +79,7 @@ const Home = ({ children }) => {
                                     width: "100%",
                                     height: "100%",
                                 }}
-                                src="https://res.cloudinary.com/dke5jqhus/image/upload/f_webp,w_308,h_632/v1702298868/dev_links/mockup-border_vmrdd7.png"
+                                src="https://res.cloudinary.com/dke5jqhus/image/upload/f_avif,w_308,h_632/v1702298868/dev_links/mockup-border_vmrdd7.png"
                                 alt="mobile mockup"
                             />
                             <div className="mockup-divs-container">

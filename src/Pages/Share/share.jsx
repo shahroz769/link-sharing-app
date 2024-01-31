@@ -38,7 +38,7 @@ import mediumIcon from "../../assets/images/icon-medium-white.svg";
 import { motion, AnimatePresence } from "framer-motion";
 
 const transformations =
-    "f_webp,ar_1:1,c_fill,g_face,r_max,w_300,h_300/c_pad/co_rgb:633CFF,e_outline:outer:14:0/";
+    "f_avif,ar_1:1,c_fill,g_face,r_max,w_300,h_300/c_pad/co_rgb:633CFF,e_outline:outer:14:0/";
 
 const Share = () => {
     const params = useParams();

@@ -72,7 +72,6 @@ const Linkscustomization = ({ order, index, link, onRemove }) => {
                     label={"Link"}
                     iconSrc={LinkIcon}
                     altText={"Link"}
-                    // onInputChange={(val) => setUrl(val)}
                     placeholderText={
                         linksData[index]?.platform?.placeholder ||
                         "Select an option from dropdown"
