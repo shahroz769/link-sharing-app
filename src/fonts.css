@@ -1,8 +1,0 @@
-@font-face {
-    font-family: "Instrument Sans", sans-serif;
-    font-optical-sizing: auto;
-    src: url("../src/assets/fonts/instrumentsans.woff2") format("woff2");
-    font-weight: 400 700;
-    font-style: normal;
-    font-variation-settings: "wdth" 100;
-}

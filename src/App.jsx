@@ -11,7 +11,6 @@ import Auth from "../hooks/Auth";
 import Share from "./Pages/Share/share";
 import { Toaster } from "react-hot-toast";
 import { AnimatePresence } from "framer-motion";
-import "../src/fonts.css";
 
 const App = () => {
     const location = useLocation();
