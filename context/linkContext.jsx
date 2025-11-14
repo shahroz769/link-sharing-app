@@ -24,22 +24,26 @@ export const LinkProvider = ({ children }) => {
         const getLinksData = async () => {
             try {
                 if (!isAuthenticated) {
+                    setIsLinkLoading(false);
                     return;
                 }
                 const res = await axiosPrivate("/link");
-                res?.data?.links && setLinksData(res.data.links);
-                setIsLinkFetched(true);
+                if (res?.data?.links) {
+                    setLinksData(res.data.links);
+                    setIsLinkFetched(true);
+                }
             } catch (error) {
                 console.error(error);
             } finally {
                 setIsLinkLoading(false);
-                return;
             }
         };
         if (location.pathname !== "/login" && location.pathname !== "/signup") {
-            !isLinkFetched && getLinksData();
+            if (!isLinkFetched && isAuthenticated) {
+                getLinksData();
+            }
         }
-    }, [location.pathname]);
+    }, [location.pathname, isLinkFetched, isAuthenticated]);
 
     return (
         <linkContext.Provider

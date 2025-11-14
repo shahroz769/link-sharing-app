@@ -22,7 +22,8 @@ export const UserProvider = ({ children }) => {
         ) {
             (async () => {
                 try {
-                    if (!isAuthenticated && location.pathname !== "/signup") {
+                    if (!isAuthenticated) {
+                        setIsLoading(false);
                         return;
                     }
                     if (!isDataFetched) {
@@ -31,18 +32,20 @@ export const UserProvider = ({ children }) => {
                         setIsDataFetched(true);
                     }
                 } catch (error) {
-                    const errorMessage = error.response.data.message;
+                    const errorMessage = error?.response?.data?.message;
                     console.error(error);
                     if (errorMessage == "jwt malformed") {
                         Cookies.remove("jwt");
-                        navigate("/");
+                        setIsDataFetched(false);
+                        setUserData({});
+                        navigate("/login");
                     }
                 } finally {
                     setIsLoading(false);
                 }
             })();
         }
-    }, [location.pathname]);
+    }, [location.pathname, isAuthenticated, isDataFetched, navigate]);
     return (
         <userContext.Provider
             value={{ userData, setUserData, isLoading, setIsDataFetched }}

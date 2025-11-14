@@ -5,7 +5,7 @@ import linkContext from "../../../context/linkContext";
 import Tabs from "../Tabs/tabs";
 import Buttonsecondary from "../Button Secondary/buttonsecondary";
 import { useNavigate, useLocation } from "react-router-dom";
-import { useState, useContext, useEffect } from "react";
+import { useState, useContext, useEffect, useRef } from "react";
 import toast from "react-hot-toast";
 import { WarningTwoTone } from "@ant-design/icons";
 import userContext from "../../../context/userContext";
@@ -14,6 +14,31 @@ import { useMediaQuery } from "react-responsive";
 
 const Nav = ({ navigateTo }) => {
     const [isScrolled, setIsScrolled] = useState(false);
+    const { linksData, setLinksData } = useContext(linkContext);
+    const { userData, setUserData, setIsDataFetched } = useContext(userContext);
+    
+    // Store initial snapshot to detect changes
+    const initialDataRef = useRef({
+        links: null,
+        user: null
+    });
+    
+    // Capture initial state when data is first loaded
+    useEffect(() => {
+        if (linksData && linksData.length > 0 && !initialDataRef.current.links) {
+            initialDataRef.current.links = JSON.stringify(linksData);
+        }
+    }, [linksData]);
+    
+    useEffect(() => {
+        if (userData && userData.firstName && !initialDataRef.current.user) {
+            initialDataRef.current.user = JSON.stringify({
+                firstName: userData.firstName,
+                lastName: userData.lastName,
+                displayEmail: userData.displayEmail
+            });
+        }
+    }, [userData]);
 
     useEffect(() => {
         const handleScroll = () => {
@@ -31,8 +56,6 @@ const Nav = ({ navigateTo }) => {
     const logoWidth = is750 ? 32 : 146;
     const navigate = useNavigate();
     const location = useLocation();
-    const { linksData, setLinksData } = useContext(linkContext);
-    const { userData, setUserData, setIsDataFetched } = useContext(userContext);
     const isProfileRoute = location.pathname === "/profile";
     const isHomeRoute = location.pathname === "/";
     const navigationHandler = (page) => {
@@ -43,6 +66,21 @@ const Nav = ({ navigateTo }) => {
             navigateTo("Profile Details");
             navigate("/profile", { state: { navigateTo: "Profile Details" } });
         }
+    };
+    
+    // Check if data has changed
+    const hasChanges = () => {
+        const currentLinks = JSON.stringify(linksData);
+        const currentUser = JSON.stringify({
+            firstName: userData.firstName,
+            lastName: userData.lastName,
+            displayEmail: userData.displayEmail
+        });
+        
+        const linksChanged = initialDataRef.current.links && currentLinks !== initialDataRef.current.links;
+        const userChanged = initialDataRef.current.user && currentUser !== initialDataRef.current.user;
+        
+        return linksChanged || userChanged;
     };
 
     const saveAllData = () => {
@@ -71,6 +109,13 @@ const Nav = ({ navigateTo }) => {
             });
         const a = Promise.all([linksPromise, detailsPromise])
             .then((results) => {
+                // Update snapshots after successful save
+                initialDataRef.current.links = JSON.stringify(linksData);
+                initialDataRef.current.user = JSON.stringify({
+                    firstName: userData.firstName,
+                    lastName: userData.lastName,
+                    displayEmail: userData.displayEmail
+                });
                 navigateTo("Preview");
                 navigate("/preview", { state: { navigateTo: "Preview" } });
             })
@@ -111,7 +156,14 @@ const Nav = ({ navigateTo }) => {
             userData.firstName &&
             userData.lastName
         ) {
-            saveAllData();
+            // Check if data has changed before saving
+            if (hasChanges()) {
+                saveAllData();
+            } else {
+                // No changes, navigate directly
+                navigateTo("Preview");
+                navigate("/preview", { state: { navigateTo: "Preview" } });
+            }
         } else {
             const toastConfig = {
                 icon: (

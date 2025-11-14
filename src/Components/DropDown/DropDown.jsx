@@ -3,35 +3,7 @@ import { useEffect, useState, useRef, useContext } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import linkContext from "../../../context/linkContext";
 import downArrow from "../../assets/images/icon-chevron-down.svg";
-import githubIcon from "../../assets/images/icon-github.svg";
-import twitterIcon from "../../assets/images/icon-twitter.svg";
-import linkedInIcon from "../../assets/images/icon-linkedin.svg";
-import youtubeIcon from "../../assets/images/icon-youtube.svg";
-import facebookIcon from "../../assets/images/icon-facebook.svg";
-import twitchIcon from "../../assets/images/icon-twitch.svg";
-import devToIcon from "../../assets/images/icon-devto.svg";
-import codeWarsIcon from "../../assets/images/icon-codewars.svg";
-import codePenIcon from "../../assets/images/icon-codepen.svg";
-import freeCodeCampIcon from "../../assets/images/icon-freecodecamp.svg";
-import gitLabIcon from "../../assets/images/icon-gitlab.svg";
-import hashNodeIcon from "../../assets/images/icon-hashnode.svg";
-import stackOverFlowIcon from "../../assets/images/icon-stack-overflow.svg";
-import frontendMentorIcon from "../../assets/images/icon-frontend-mentor.svg";
-import whatsappIcon from "../../assets/images/icon-whatsapp.svg";
-import xdaIcon from "../../assets/images/icon-xda.svg";
-import instagramIcon from "../../assets/images/icon-instagram.svg";
-import discordIcon from "../../assets/images/icon-discord.svg";
-import telegramIcon from "../../assets/images/icon-telegram.svg";
-import threadsIcon from "../../assets/images/icon-threads.svg";
-import websiteIcon from "../../assets/images/icon-website.svg";
-import redditIcon from "../../assets/images/icon-reddit.svg";
-import quoraIcon from "../../assets/images/icon-quora.svg";
-import tiktokIcon from "../../assets/images/icon-tiktok.svg";
-import snapchatIcon from "../../assets/images/icon-snapchat.svg";
-import tumblrIcon from "../../assets/images/icon-tumblr.svg";
-import fiverrIcon from "../../assets/images/icon-fiverr.svg";
-import upworkIcon from "../../assets/images/icon-upwork.svg";
-import mediumIcon from "../../assets/images/icon-medium.svg";
+import { getDropdownIcon } from "../../utils/iconLoader";
 
 const linkOptions = [
     {
@@ -324,41 +296,7 @@ const DropDown = ({ onSelectPlatform, index }) => {
                     <>
                         <div className="dropdown-option-img">
                             <img
-                                src={(() => {
-                                    const platformText = selectedPlatform?.text;
-                                    const platformIcon = {
-                                        GitHub: githubIcon,
-                                        Twitter: twitterIcon,
-                                        LinkedIn: linkedInIcon,
-                                        YouTube: youtubeIcon,
-                                        Facebook: facebookIcon,
-                                        Twitch: twitchIcon,
-                                        DevTo: devToIcon,
-                                        CodeWars: codeWarsIcon,
-                                        CodePen: codePenIcon,
-                                        FreeCodeCamp: freeCodeCampIcon,
-                                        GitLab: gitLabIcon,
-                                        Hashnode: hashNodeIcon,
-                                        StackOverflow: stackOverFlowIcon,
-                                        FrontendMentor: frontendMentorIcon,
-                                        WhatsApp: whatsappIcon,
-                                        XDA: xdaIcon,
-                                        Instagram: instagramIcon,
-                                        Discord: discordIcon,
-                                        Telegram: telegramIcon,
-                                        Threads: threadsIcon,
-                                        Website: websiteIcon,
-                                        Reddit: redditIcon,
-                                        Quora: quoraIcon,
-                                        TikTok: tiktokIcon,
-                                        Snapchat: snapchatIcon,
-                                        Tumblr: tumblrIcon,
-                                        Fiverr: fiverrIcon,
-                                        Upwork: upworkIcon,
-                                        Medium: mediumIcon,
-                                    }[platformText];
-                                    return platformIcon || null;
-                                })()}
+                                src={getDropdownIcon(selectedPlatform?.text)}
                                 alt={selectedPlatform.text}
                             />
                         </div>
@@ -400,43 +338,7 @@ const DropDown = ({ onSelectPlatform, index }) => {
                             >
                                 <div className="dropdown-option-img">
                                     <img
-                                        src={(() => {
-                                            const platformText = option?.text;
-                                            const platformIcon = {
-                                                GitHub: githubIcon,
-                                                Twitter: twitterIcon,
-                                                LinkedIn: linkedInIcon,
-                                                YouTube: youtubeIcon,
-                                                Facebook: facebookIcon,
-                                                Twitch: twitchIcon,
-                                                DevTo: devToIcon,
-                                                CodeWars: codeWarsIcon,
-                                                CodePen: codePenIcon,
-                                                FreeCodeCamp: freeCodeCampIcon,
-                                                GitLab: gitLabIcon,
-                                                Hashnode: hashNodeIcon,
-                                                StackOverflow:
-                                                    stackOverFlowIcon,
-                                                FrontendMentor:
-                                                    frontendMentorIcon,
-                                                WhatsApp: whatsappIcon,
-                                                XDA: xdaIcon,
-                                                Instagram: instagramIcon,
-                                                Discord: discordIcon,
-                                                Telegram: telegramIcon,
-                                                Threads: threadsIcon,
-                                                Website: websiteIcon,
-                                                Reddit: redditIcon,
-                                                Quora: quoraIcon,
-                                                TikTok: tiktokIcon,
-                                                Snapchat: snapchatIcon,
-                                                Tumblr: tumblrIcon,
-                                                Fiverr: fiverrIcon,
-                                                Upwork: upworkIcon,
-                                                Medium: mediumIcon,
-                                            }[platformText];
-                                            return platformIcon || null;
-                                        })()}
+                                        src={getDropdownIcon(option?.text)}
                                         alt={option.text}
                                     />
                                 </div>

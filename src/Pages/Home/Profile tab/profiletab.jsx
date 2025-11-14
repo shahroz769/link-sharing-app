@@ -37,7 +37,7 @@ const transformations =
 
 const Profiletab = () => {
     const navigate = useNavigate();
-    const { linksData, updateLinksData, setLinksData } =
+    const { linksData, updateLinksData, setLinksData, setIsLinkFetched } =
         useContext(linkContext);
     const { userData, setUserData, isLoading } = useContext(userContext);
     const [isLogoutHovered, setIsLogoutHovered] = useState(false);
@@ -166,10 +166,11 @@ const Profiletab = () => {
                             onMouseLeave={() => setIsLogoutHovered(false)}
                             onClick={() => {
                                 setIsDataFetched(false);
+                                setIsLinkFetched(false);
                                 setUserData({});
                                 setLinksData([]);
                                 Cookies.remove("jwt");
-                                navigate("/");
+                                navigate("/login");
                             }}
                         >
                             <IconLogout

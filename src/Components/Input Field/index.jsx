@@ -59,6 +59,11 @@ const InputField = ({
     const [isFocused, setIsFocused] = useState(false);
     const [haveError, setHaveError] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
+    
+    // Sync inputValue with value prop when it changes externally
+    useEffect(() => {
+        setInputValue(value || "");
+    }, [value]);
 
     useEffect(() => {
         type == "password"

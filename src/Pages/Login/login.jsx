@@ -24,9 +24,9 @@ const Login = () => {
     }, [isAuthenticated, navigate]);
     const location = useLocation();
     const [navigatingTo, setNavigatingTo] = useState(null);
-    const [email, setEmail] = useState("");
+    const [email, setEmail] = useState("admin-test@gmail.com.com");
     const [emailError, setEmailError] = useState(false);
-    const [password, setPassword] = useState("");
+    const [password, setPassword] = useState("Admin@123");
     const [passwordError, setPasswordError] = useState(false);
     const [disable, setDisable] = useState(false);
 

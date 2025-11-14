@@ -1,13 +1,12 @@
 import "./PreviewFieldsSketeton.css";
 import { Skeleton } from "antd";
-import { useCallback } from "react";
 import { useMediaQuery } from "react-responsive";
 
 const PreviewFieldsSkeleton = () => {
     const is1110 = useMediaQuery({ minWidth: 1110 });
     const is530 = useMediaQuery({ minWidth: 530 });
     const is450 = useMediaQuery({ minWidth: 450 });
-    const getLabelWidth = useCallback(() => {
+    const getLabelWidth = () => {
         switch (true) {
             case is1110:
                 return 100;
@@ -18,9 +17,9 @@ const PreviewFieldsSkeleton = () => {
             default:
                 return 0; // Set a default value, adjust as needed
         }
-    });
+    };
 
-    const getInputWidth = useCallback(() => {
+    const getInputWidth = () => {
         switch (true) {
             case is1110:
                 return 465;
@@ -31,7 +30,7 @@ const PreviewFieldsSkeleton = () => {
             default:
                 return 0; // Set a default value, adjust as needed
         }
-    });
+    };
     return (
         <div className="profile-details-data">
             <div className="skeleton-profile-fileds">
